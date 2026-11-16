@@ -115,18 +115,6 @@
         .test-regular:hover { background: rgba(56, 189, 248, 0.25); }
         .test-stop { background: rgba(244, 63, 94, 0.15); color: #fb7185; border-color: rgba(251, 113, 133, 0.3); }
         .test-stop:hover { background: rgba(244, 63, 94, 0.25); }
-        .battery-warning {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(244, 63, 94, 0.95); color: white; padding: 12px 20px;
-            border-radius: 12px; font-size: 13px; font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100;
-            display: none; max-width: 90%;
-        }
-        .battery-warning.show { display: block; animation: slideUp 0.3s ease; }
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(100%); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
     </style>
 </head>
 <body data-theme="dark">
@@ -234,7 +222,7 @@
 
             <div class="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs opacity-65">
                 <span id="liveClockDisplay" class="mono-num">الآن: --:--:--</span>
-                <span id="bgStatusBadge" class="font-bold">المس الشاشة لتفعيل وضع الخلفية</span>
+                <span id="audioStatusBadge" class="font-bold">المس الشاشة مرة لتفعيل صوت الأذان</span>
                 <button onclick="openGuideModal()" class="underline hover:opacity-100 flex items-center gap-1">
                     <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
                     <span>طريقة التثبيت كـ ويدجت / تطبيق</span>
@@ -383,7 +371,7 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs opacity-70 mb-1">التنبيه قبل الصلاة</label>
+                            <label class="block text-xs opacity-70 mb-1">التنبيه قبل الصلاة (بدون صوت)</label>
                             <select id="preAlertSelect" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none">
                                 <option value="0">إيقاف</option>
                                 <option value="5">قبل 5 دقائق</option>
@@ -394,7 +382,7 @@
                     </div>
                     <label class="flex items-center gap-2 cursor-pointer pt-1">
                         <input type="checkbox" id="enableAdhanCheckbox" checked class="w-4 h-4 accent-sky-400 rounded">
-                        <span class="text-xs sm:text-sm font-bold">تشغيل الأذان تلقائياً</span>
+                        <span class="text-xs sm:text-sm font-bold">تشغيل الأذان تلقائياً في وقته</span>
                     </label>
 
                     <div class="mt-3 pt-3 border-t border-white/10 space-y-2">
@@ -429,7 +417,7 @@
                             </div>
                             <div class="flex items-start gap-1.5">
                                 <span class="text-sky-400 font-black shrink-0">✓</span>
-                                <span><b class="text-sky-400">باقي الصلوات:</b> أذان موحد بدون هذه العبارة.</span>
+                                <span><b class="text-sky-400">إيقاف من الإشعار مباشرة</b> — بدون فتح التطبيق، و الأذان فقط في وقته بدون أي صوت آخر.</span>
                             </div>
                         </div>
                     </div>
@@ -454,19 +442,19 @@
             <div class="space-y-3 text-xs sm:text-sm leading-relaxed">
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-emerald-400 block mb-1">📱 أندرويد:</strong>
-                    افتح في Chrome و اضغط "تثبيت التطبيق" أو "الإضافة إلى الشاشة الرئيسية"، ثم المس الشاشة مرة واحدة لتفعيل وضع الخلفية 🔊.
+                    افتح في Chrome واضغط "تثبيت التطبيق"، ثم المس الشاشة مرة واحدة لتفعيل صوت الأذان 🔔 عند الأذان يوصلك إشعار فيه زر «إيقاف الأذان» توقفه منه مباشرة.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
-                    افتح في Safari، اضغط المشاركة (Share) ثم "إضافة إلى الصفحة الرئيسية". أبقِ التطبيق مفتوحاً والشاشة مضاءة — الشاشة لن تنطفئ تلقائياً والأذان سيعمل في موعده.
+                    افتح في Safari → المشاركة → "إضافة إلى الصفحة الرئيسية". المس الشاشة مرة لتفعيل الصوت، و أبقِ التطبيق مفتوحاً عند انتظار الأذان. الإيقاف من مشغل الوسائط على شاشة القفل أو بفتح الإشعار.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-amber-400 block mb-1">💻 كمبيوتر/تلفزيون:</strong>
                     ثبّته كتطبيق سطح مكتب من قائمة المتصفح.
                 </div>
                 <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
-                    <strong class="text-amber-400 block mb-1">⚡ مهم لتشغيل الأذان في الخلفية (أندرويد):</strong>
-                    إعدادات البطارية → اختر المتصفح/التطبيق → فعّل "عدم التحسين" أو "السماح بالعمل في الخلفية"، ولا تُقفل التطبيق نهائياً من قائمة التطبيقات الحديثة.
+                    <strong class="text-amber-400 block mb-1">ℹ️ كيف يعمل الأذان؟</strong>
+                    الأذان يعمل في موعده و التطبيق مفتوح، و يوصلك إشعار بإيقاف مباشر. لا يوجد أي صوت مستمر و الشاشة تنطفئ طبيعي. إذا انطفأت الشاشة أو أُغلق التطبيق قد يتأخر الأذان أو لا يعمل حسب نظام الجهاز.
                 </div>
                 <div id="ownerSwBox" class="hidden p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
                     <strong class="text-sky-400 block mb-1">🔧 أدوات المالك (تظهر فقط عبر ?setup=1):</strong>
@@ -485,10 +473,6 @@
                 <button onclick="closeGuideModal()" class="px-5 py-2 rounded-xl bg-sky-500 text-slate-950 font-black text-sm">فهمت</button>
             </div>
         </div>
-    </div>
-
-    <div id="batteryWarning" class="battery-warning">
-        ⚠️ لتشغيل الأذان في الخلفية: اذهب لإعدادات البطارية وفعل "عدم التحسين" للتطبيق
     </div>
 
     <audio id="unlockAudio" preload="auto" playsinline></audio>
@@ -517,9 +501,6 @@
         let audioUnlocked = false;
         let unlockWavUrl = null;
 
-        let wakeLock = null;
-        let keepAliveAudio = null;
-        let keepAlivePausedByUser = false;
         let bgWorker = null;
         let lastFetchDay = '';
         let isFetching = false;
@@ -534,7 +515,6 @@
         const ADHAN_FAJR_URL = 'https://archive.org/download/AthanMakkahFajr3111434SheikhAhmadBasnawi/Athan%20-%20Makkah%20Fajr%20%5B3-11-1434%5D%20Sheikh%20Ahmad%20Basnawi.mp3';
         const ADHAN_GENERAL_URL = 'https://www.islamcan.com/audio/adhan/azan1.mp3';
 
-        // ===== أيقونة التطبيق PNG حقيقية (أفضل توافقاً مع التثبيت والإشعارات) =====
         function makePngIcon(size) {
             try {
                 const c = document.createElement('canvas');
@@ -558,9 +538,7 @@
         }
         const APP_ICON_URL = makePngIcon(512);
 
-        // ===== توليد صوت "شبه صامت" طويل (نبرة منخفضة جداً غير مسموعة عملياً) =====
-        // يجعل كروم يعتبر الصفحة "تشغّل صوتاً" فيعفيها من تجميد المؤقتات في الخلفية
-        function makeNearSilentWavUrl(seconds) {
+        function makeSilentWavUrl(seconds) {
             const rate = 8000, n = rate * seconds;
             const buf = new ArrayBuffer(44 + n * 2);
             const v = new DataView(buf);
@@ -570,14 +548,13 @@
             v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true);
             v.setUint16(32, 2, true); v.setUint16(34, 16, true);
             ws(36, 'data'); v.setUint32(40, n * 2, true);
-            for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.round(Math.sin(i * 0.05) * 512), true);
+            for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, 0, true);
             return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
         }
 
-        // فتح قفل الصوت على عنصري التشغيل معاً (مهم لآيفون: كل عنصر يحتاج لمسة مستخدم)
         function tryUnlockAudio() {
             if (audioUnlocked) return;
-            if (!unlockWavUrl) unlockWavUrl = makeNearSilentWavUrl(1);
+            if (!unlockWavUrl) unlockWavUrl = makeSilentWavUrl(1);
             const els = [document.getElementById('unlockAudio'), document.getElementById('adhanAudioPlayer')];
             els.forEach((el) => {
                 if (!el) return;
@@ -587,6 +564,7 @@
                 if (p) p.then(() => { el.pause(); el.currentTime = 0; el.volume = 1; }).catch(() => {});
             });
             audioUnlocked = true;
+            updateAudioStatus();
             if (!sharedAudioCtx) {
                 try {
                     const AC = window.AudioContext || window.webkitAudioContext;
@@ -607,7 +585,6 @@
             loadSettings();
             applyVisualThemeAndLayout();
             setupDynamicPWA();
-            setupMediaSession();
             loadCachedTimings();
             try {
                 lastTriggeredAdhanKey = localStorage.getItem('last_adhan_trigger_v17') || '';
@@ -615,116 +592,48 @@
             if (settings.autoGpsOnLoad) detectUserLocation(false);
             else fetchPrayerTimes();
 
-            requestWakeLock();
-            startKeepAliveAudio();
             startBackgroundTimer();
             registerServiceWorker();
-            updateBgStatus();
+            updateAudioStatus();
 
-            // وضع المالك: يظهر فقط عند إضافة ?setup=1 أو #setup لرابط الموقع
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('message', (e) => {
+                    if (e.data && e.data.type === 'STOP_ADHAN') stopAdhan();
+                });
+            }
+
             if (location.search.indexOf('setup') !== -1 || location.hash.indexOf('setup') !== -1) {
                 const ob = document.getElementById('ownerSwBox');
                 if (ob) ob.classList.remove('hidden');
             }
 
             setTimeout(() => {
-                if (!keepAliveAudio && !keepAlivePausedByUser) showToast('المس الشاشة مرة واحدة لتفعيل أذان الخلفية 🔊');
+                if (!audioUnlocked) showToast('المس الشاشة مرة واحدة لتفعيل صوت الأذان 🔔');
             }, 2000);
-
-            setTimeout(() => {
-                if (document.visibilityState === 'visible') showBatteryWarning();
-            }, 30000);
 
             setInterval(fetchPrayerTimes, 30 * 60 * 1000);
             window.addEventListener('online', () => { fetchPrayerTimes(); });
         });
 
-        // ===== تحسينات الخلفية (نسخة مصححة) =====
-
-        function setupMediaSession() {
-            if (!('mediaSession' in navigator)) return;
-            try {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: 'أوقات الصلاة والأذان',
-                    artist: 'تطبيق المواقيت',
-                    album: 'مواقيت الصلاة اليومية',
-                    artwork: [{ src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }]
-                });
-                navigator.mediaSession.setActionHandler('play', () => {
-                    keepAlivePausedByUser = false;
-                    tryUnlockAudio();
-                    activateKeepAlive();
-                    navigator.mediaSession.playbackState = 'playing';
-                    updateBgStatus();
-                });
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    stopAdhan();
-                    keepAlivePausedByUser = true;
-                    if (keepAliveAudio) keepAliveAudio.pause();
-                    navigator.mediaSession.playbackState = 'paused';
-                    updateBgStatus();
-                    showToast('تم إيقاف وضع الخلفية — اضغط ▶️ في مشغل الوسائط لإعادته');
-                });
-                navigator.mediaSession.setActionHandler('stop', () => { stopAdhan(); });
-            } catch (e) {}
-        }
-
-        async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator && document.visibilityState === 'visible') {
-                    wakeLock = await navigator.wakeLock.request('screen');
-                }
-            } catch (err) {}
+        function updateAudioStatus() {
+            const el = document.getElementById('audioStatusBadge');
+            if (!el) return;
+            if (audioUnlocked) {
+                el.textContent = '🔔 الأذان جاهز — يعمل في موعده';
+                el.style.color = '#34d399';
+            } else {
+                el.textContent = 'المس الشاشة مرة لتفعيل صوت الأذان';
+                el.style.color = '#fbbf24';
+            }
         }
 
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
-                requestWakeLock();
                 tickSecond();
                 if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
-                if (keepAliveAudio && keepAliveAudio.paused && !keepAlivePausedByUser) {
-                    keepAliveAudio.play().catch(() => {});
-                }
-                updateBgStatus();
+                updateAudioStatus();
             }
         });
-
-        function activateKeepAlive() {
-            if (keepAliveAudio || keepAlivePausedByUser) return;
-            const a = new Audio(makeNearSilentWavUrl(5));
-            a.loop = true;
-            a.volume = 0.02;
-            // نبضة إضافية مقاومة للتجميد: أحداث الوسائط تستمر بالخلفية ما دام الصوت يعمل
-            a.addEventListener('timeupdate', () => { tickSecond(); });
-            a.play().then(() => {
-                keepAliveAudio = a;
-                if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
-                updateBgStatus();
-                console.log('✓ Keep-Alive مفعّل — وضع الخلفية يعمل');
-            }).catch(() => { try { a.pause(); } catch (e) {} });
-        }
-
-        function startKeepAliveAudio() {
-            if (keepAliveAudio) return;
-            document.addEventListener('click', activateKeepAlive);
-            document.addEventListener('touchstart', activateKeepAlive, { passive: true });
-            document.addEventListener('keydown', activateKeepAlive);
-        }
-
-        function updateBgStatus() {
-            const el = document.getElementById('bgStatusBadge');
-            if (!el) return;
-            if (keepAlivePausedByUser) {
-                el.textContent = '⏸️ الخلفية: متوقفة (أعدها من مشغل الوسائط)';
-                el.style.color = '#fb7185';
-            } else if (keepAliveAudio && !keepAliveAudio.paused) {
-                el.textContent = '🔊 وضع الخلفية: مفعّل';
-                el.style.color = '#34d399';
-            } else {
-                el.textContent = 'المس الشاشة لتفعيل وضع الخلفية';
-                el.style.color = '#fbbf24';
-            }
-        }
 
         const workerCode = `
             let intervalId = null;
@@ -763,27 +672,29 @@
                         const d = (nextPrayerObj && nextPrayerObj.key === key)
                             ? nextPrayerObj.date
                             : parsePrayerDate(timingsData[key]);
-                        // نفس الحارس المستخدم في tickSecond لمنع الأذان المزدوج
                         if (triggerAdhanOnce(key, d)) setTimeout(fetchPrayerTimes, 2500);
                         calculateNextPrayer();
                     }
                 };
                 bgWorker.postMessage({ action: 'start' });
-                console.log('✓ Background Worker مفعّل');
             } catch (e) {
-                console.log('Worker غير متاح — استخدام مؤقت عادي');
                 setInterval(tickSecond, 1000);
             }
         }
 
-        // ===== Service Worker: ملف حقيقي ./sw.js (تسجيل blob مستحيل في المتصفحات) =====
         const SW_FILE_CODE = `/* sw.js — ضعه بجانب صفحة التطبيق على استضافة https */
-const CACHE = 'prayer-shell-v1';
+const CACHE = 'prayer-shell-v2';
 self.addEventListener('install', (e) => {
     self.skipWaiting();
     e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./'])).catch(() => {}));
 });
-self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener('activate', (e) => {
+    e.waitUntil((async () => {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
+        await self.clients.claim();
+    })());
+});
 self.addEventListener('fetch', (e) => {
     if (e.request.method !== 'GET') return;
     e.respondWith(
@@ -795,11 +706,17 @@ self.addEventListener('fetch', (e) => {
     );
 });
 self.addEventListener('notificationclick', (e) => {
+    const action = e.action;
     e.notification.close();
-    e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+    e.waitUntil((async () => {
+        const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        if (action === 'stop-adhan') {
+            for (const c of list) { c.postMessage({ type: 'STOP_ADHAN' }); }
+            return;
+        }
         for (const c of list) { if ('focus' in c) return c.focus(); }
         return self.clients.openWindow('./');
-    }));
+    })());
 });
 self.addEventListener('push', (e) => {
     let data = {};
@@ -809,20 +726,18 @@ self.addEventListener('push', (e) => {
         dir: 'rtl', lang: 'ar',
         vibrate: [200, 100, 200],
         requireInteraction: true,
-        tag: 'prayer-notification'
+        tag: 'prayer-notification',
+        actions: [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }]
     }));
 });
 `;
 
         function registerServiceWorker() {
             if (!('serviceWorker' in navigator)) return;
-            if (!location.protocol.startsWith('http')) {
-                console.log('ℹ Service Worker يحتاج استضافة https ولا يعمل من ملف محلي');
-                return;
-            }
+            if (!location.protocol.startsWith('http')) return;
             navigator.serviceWorker.register('./sw.js')
                 .then(() => console.log('✓ Service Worker مسجل'))
-                .catch(() => console.log('ℹ ضع ملف sw.js بجانب الصفحة لتفعيل إشعارات أندرويد (افتح ?setup=1 لتحميله)'));
+                .catch(() => console.log('ℹ ضع ملف sw.js بجانب الصفحة لتفعيل الإشعارات'));
         }
 
         function downloadServiceWorkerFile() {
@@ -833,17 +748,9 @@ self.addEventListener('push', (e) => {
                 a.href = url; a.download = 'sw.js';
                 document.body.appendChild(a); a.click(); document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                showToast('ضع ملف sw.js بجانب صفحة التطبيق على الاستضافة');
+                showToast('تم تحميل ملف sw.js');
             } catch (e) { showToast('فشل تحميل الملف'); }
         }
-
-        function showBatteryWarning() {
-            const warning = document.getElementById('batteryWarning');
-            warning.classList.add('show');
-            setTimeout(() => warning.classList.remove('show'), 8000);
-        }
-
-        // ===== الكود الأصلي (مع الإصلاحات) =====
 
         function loadSettings() {
             try {
@@ -1070,7 +977,6 @@ self.addEventListener('push', (e) => {
             }
         }
 
-        // الحارس الموحّد: يمنع تشغيل الأذان مرتين (من العامل ومن المؤقت معاً)
         function triggerAdhanOnce(prayerKey, prayerDate) {
             const triggerId = `${prayerKey}-${prayerDate.toDateString()}`;
             if (lastTriggeredAdhanKey === triggerId) return false;
@@ -1085,9 +991,6 @@ self.addEventListener('push', (e) => {
             const liveClockEl = document.getElementById('liveClockDisplay');
             if (liveClockEl) liveClockEl.textContent = `الآن: ${now.toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit', second:'2-digit' })}`;
 
-            if (keepAliveAudio && keepAliveAudio.paused && !keepAlivePausedByUser) {
-                keepAliveAudio.play().catch(() => {});
-            }
             if (lastFetchDay && lastFetchDay !== now.toDateString() && Date.now() - lastDayCheckAttempt > 60000) {
                 lastDayCheckAttempt = Date.now();
                 fetchPrayerTimes();
@@ -1134,7 +1037,7 @@ self.addEventListener('push', (e) => {
         function onPrayerTimeArrived(prayerKey) {
             const prayerName = PRAYER_NAMES_AR[prayerKey];
             const isMuted = !!settings.mutedPrayers[prayerKey];
-            sendSystemNotification(`حان الآن موعد أذان ${prayerName}`, `حسب التوقيت المحلي لمدينة ${settings.cityAr}`);
+            sendSystemNotification(`حان الآن موعد أذان ${prayerName}`, `حسب التوقيت المحلي لمدينة ${settings.cityAr}`, true);
             if (settings.adhanEnabled && !isMuted) playAdhanAudio(prayerKey, `أذان ${prayerName}`);
             else showToast(`حان الآن موعد أذان ${prayerName}`);
         }
@@ -1142,8 +1045,7 @@ self.addEventListener('push', (e) => {
         function triggerPrePrayerNotification(prayerKey, mins) {
             const msg = `باقي ${mins} دقائق على أذان ${PRAYER_NAMES_AR[prayerKey]}`;
             showToast(msg);
-            sendSystemNotification('تنبيه اقتراب الصلاة', msg);
-            playSoftChime();
+            sendSystemNotification('تنبيه اقتراب الصلاة', msg, false);
         }
 
         function testAdhan(prayerKey) {
@@ -1163,18 +1065,6 @@ self.addEventListener('push', (e) => {
             const qs = document.getElementById('quickStopAdhanBtn');
             if (qs) qs.classList.remove('hidden');
 
-            if ('mediaSession' in navigator) {
-                try {
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                        title: titleText,
-                        artist: settings.cityAr || 'أوقات الصلاة',
-                        album: 'الأذان',
-                        artwork: [{ src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }]
-                    });
-                    navigator.mediaSession.playbackState = 'playing';
-                } catch (e) {}
-            }
-
             const audio = document.getElementById('adhanAudioPlayer');
             audio.pause();
             audio.currentTime = 0;
@@ -1187,6 +1077,21 @@ self.addEventListener('push', (e) => {
             audio.src = prayerKey === 'Fajr' ? ADHAN_FAJR_URL : ADHAN_GENERAL_URL;
             audio.onerror = () => { playSoftChime(); };
             audio.onended = () => { stopAdhan(); };
+
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: titleText,
+                        artist: settings.cityAr || 'أوقات الصلاة',
+                        album: 'الأذان',
+                        artwork: [{ src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }]
+                    });
+                    navigator.mediaSession.playbackState = 'playing';
+                    navigator.mediaSession.setActionHandler('pause', () => stopAdhan());
+                    navigator.mediaSession.setActionHandler('stop', () => stopAdhan());
+                } catch (e) {}
+            }
+
             const p = audio.play();
             if (p) p.catch(() => { playSoftChime(); });
         }
@@ -1206,9 +1111,17 @@ self.addEventListener('push', (e) => {
             if (qs) qs.classList.add('hidden');
             if ('mediaSession' in navigator) {
                 try {
-                    navigator.mediaSession.playbackState =
-                        (keepAliveAudio && !keepAliveAudio.paused) ? 'playing' : 'paused';
+                    navigator.mediaSession.playbackState = 'none';
+                    navigator.mediaSession.metadata = null;
+                    navigator.mediaSession.setActionHandler('pause', null);
+                    navigator.mediaSession.setActionHandler('stop', null);
                 } catch (e) {}
+            }
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistration().then((reg) => {
+                    if (reg) return reg.getNotifications({ tag: 'prayer-notification' });
+                    return [];
+                }).then((ns) => { ns.forEach((n) => n.close()); }).catch(() => {});
             }
         }
 
@@ -1241,7 +1154,7 @@ self.addEventListener('push', (e) => {
             }
         }
 
-        async function sendSystemNotification(title, body) {
+        async function sendSystemNotification(title, body, withStopAction) {
             if (!('Notification' in window) || Notification.permission !== 'granted') return;
             const opts = {
                 body, dir: 'rtl', lang: 'ar',
@@ -1249,6 +1162,10 @@ self.addEventListener('push', (e) => {
                 requireInteraction: true, vibrate: [200, 100, 200],
                 icon: APP_ICON_URL, badge: APP_ICON_URL
             };
+            if (withStopAction) {
+                opts.actions = [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }];
+                opts.data = { stopAction: true };
+            }
             try {
                 const reg = ('serviceWorker' in navigator)
                     ? await navigator.serviceWorker.getRegistration() : null;
@@ -1341,7 +1258,7 @@ self.addEventListener('push', (e) => {
         function setupDynamicPWA() {
             const manifest = {
                 name: 'أوقات الصلاة و الأذان', short_name: 'أوقات الصلاة',
-                description: 'تطبيق أوقات الصلاة و الأذان مع تنبيهات الخلفية',
+                description: 'تطبيق أوقات الصلاة و الأذان',
                 id: 'prayer-times-adhan-app',
                 start_url: location.href.split('?')[0].split('#')[0],
                 scope: new URL('.', location.href).href,
