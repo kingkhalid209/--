@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>أوقات الصلاة و الأذان</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -240,7 +251,7 @@
             <div class="flex items-center justify-between pb-4 mb-5 border-b border-white/10">
                 <div class="flex items-center gap-2">
                     <i data-lucide="settings" class="w-5 h-5 text-sky-400"></i>
-                    <h3 class="text-lg font-black">إعدادات أوقات الصلاة والأذان</h3>
+                    <h3 class="text-lg font-black">إعدادات أوقات الصلاة و الأذان</h3>
                 </div>
                 <button onclick="toggleSettingsModal(false)" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -304,11 +315,11 @@
                 <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
                     <h4 class="font-extrabold text-sky-400 flex items-center gap-1.5">
                         <i data-lucide="calculator" class="w-4 h-4"></i>
-                        <span>طريقة الحساب والتاريخ الهجري</span>
+                        <span>طريقة الحساب و التاريخ الهجري</span>
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs opacity-70 mb-1">جهة التقويم والحساب</label>
+                            <label class="block text-xs opacity-70 mb-1">جهة التقويم و الحساب</label>
                             <select id="calcMethodSelect" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none">
                                 <option value="4">تقويم أم القرى</option>
                                 <option value="3">رابطة العالم الإسلامي</option>
@@ -352,7 +363,7 @@
                 <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
                     <h4 class="font-extrabold text-sky-400 flex items-center gap-1.5">
                         <i data-lucide="bell-ring" class="w-4 h-4"></i>
-                        <span>صوت الأذان والتنبيهات</span>
+                        <span>صوت الأذان و التنبيهات</span>
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
@@ -426,7 +437,7 @@
     <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border border-white/20 shadow-2xl space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                <h3 class="text-lg font-black text-sky-400">تثبيت التطبيق والويدجت</h3>
+                <h3 class="text-lg font-black text-sky-400">تثبيت التطبيق و الويدجت</h3>
                 <button onclick="closeGuideModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
@@ -434,7 +445,7 @@
             <div class="space-y-3 text-xs sm:text-sm leading-relaxed">
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-emerald-400 block mb-1">📱 أندرويد:</strong>
-                    افتح في Chrome واضغط "تثبيت التطبيق" أو "الإضافة إلى الشاشة الرئيسية".
+                    افتح في Chrome و اضغط "تثبيت التطبيق" أو "الإضافة إلى الشاشة الرئيسية".
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
@@ -969,8 +980,8 @@
             const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f172a"/><path d="M330 140a130 130 0 1 0 90 220 110 110 0 1 1-90-220z" fill="#38bdf8"/><circle cx="360" cy="180" r="18" fill="#fbbf24"/></svg>`;
             const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
             const manifest = {
-                name: 'أوقات الصلاة والأذان', short_name: 'أوقات الصلاة',
-                description: 'تطبيق أوقات الصلاة والأذان',
+                name: 'أوقات الصلاة و الأذان', short_name: 'أوقات الصلاة',
+                description: 'تطبيق أوقات الصلاة و الأذان',
                 start_url: window.location.href, display: 'standalone',
                 background_color: '#090d16', theme_color: '#0f172a',
                 icons: [{ src: iconUrl, sizes: '192x192', type: 'image/svg+xml' }, { src: iconUrl, sizes: '512x512', type: 'image/svg+xml' }]
@@ -1022,4 +1033,8 @@
         }
     </script>
 </body>
+</html>
+    
+  </body>
+  
 </html>
