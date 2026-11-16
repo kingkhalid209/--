@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>أوقات الصلاة و الأذان</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -104,6 +115,18 @@
         .test-regular:hover { background: rgba(56, 189, 248, 0.25); }
         .test-stop { background: rgba(244, 63, 94, 0.15); color: #fb7185; border-color: rgba(251, 113, 133, 0.3); }
         .test-stop:hover { background: rgba(244, 63, 94, 0.25); }
+        .battery-warning {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(244, 63, 94, 0.95); color: white; padding: 12px 20px;
+            border-radius: 12px; font-size: 13px; font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 100;
+            display: none; max-width: 90%;
+        }
+        .battery-warning.show { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -127,10 +150,6 @@
             <button id="installAppBtn" onclick="promptInstallApp()" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-400 transition active:scale-95">
                 <i data-lucide="smartphone" class="w-4 h-4"></i>
                 <span>تثبيت التطبيق</span>
-            </button>
-            <button onclick="downloadStandaloneApp()" title="تحميل نسخة أوفلاين" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95">
-                <i data-lucide="download" class="w-4 h-4"></i>
-                <span class="hidden md:inline">تحميل أوفلاين</span>
             </button>
             <button onclick="toggleSettingsModal(true)" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/15 transition active:scale-95">
                 <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
@@ -213,8 +232,9 @@
 
             <div id="prayersList" class="prayers-grid flex flex-col gap-2"></div>
 
-            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs opacity-65">
+            <div class="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs opacity-65">
                 <span id="liveClockDisplay" class="mono-num">الآن: --:--:--</span>
+                <span id="bgStatusBadge" class="font-bold">المس الشاشة لتفعيل وضع الخلفية</span>
                 <button onclick="openGuideModal()" class="underline hover:opacity-100 flex items-center gap-1">
                     <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
                     <span>طريقة التثبيت كـ ويدجت / تطبيق</span>
@@ -424,7 +444,7 @@
     </div>
 
     <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border border-white/20 shadow-2xl space-y-4">
+        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border border-white/20 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-3 border-b border-white/10">
                 <h3 class="text-lg font-black text-sky-400">تثبيت التطبيق و الويدجت</h3>
                 <button onclick="closeGuideModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20">
@@ -434,21 +454,41 @@
             <div class="space-y-3 text-xs sm:text-sm leading-relaxed">
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-emerald-400 block mb-1">📱 أندرويد:</strong>
-                    افتح في Chrome و اضغط "تثبيت التطبيق" أو "الإضافة إلى الشاشة الرئيسية".
+                    افتح في Chrome و اضغط "تثبيت التطبيق" أو "الإضافة إلى الشاشة الرئيسية"، ثم المس الشاشة مرة واحدة لتفعيل وضع الخلفية 🔊.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
-                    افتح في Safari، اضغط المشاركة (Share) ثم "إضافة إلى الصفحة الرئيسية".
+                    افتح في Safari، اضغط المشاركة (Share) ثم "إضافة إلى الصفحة الرئيسية". أبقِ التطبيق مفتوحاً والشاشة مضاءة — الشاشة لن تنطفئ تلقائياً والأذان سيعمل في موعده.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-amber-400 block mb-1">💻 كمبيوتر/تلفزيون:</strong>
-                    ثبّته كتطبيق سطح مكتب أو اضغط "تحميل أوفلاين".
+                    ثبّته كتطبيق سطح مكتب من قائمة المتصفح.
+                </div>
+                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+                    <strong class="text-amber-400 block mb-1">⚡ مهم لتشغيل الأذان في الخلفية (أندرويد):</strong>
+                    إعدادات البطارية → اختر المتصفح/التطبيق → فعّل "عدم التحسين" أو "السماح بالعمل في الخلفية"، ولا تُقفل التطبيق نهائياً من قائمة التطبيقات الحديثة.
+                </div>
+                <div id="ownerSwBox" class="hidden p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
+                    <strong class="text-sky-400 block mb-1">🔧 أدوات المالك (تظهر فقط عبر ?setup=1):</strong>
+                    هذه الأدوات لك أنت يا صاحب الموقع — الزوار لا يرون هذا الصندوق أبداً.
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <button onclick="downloadServiceWorkerFile()" class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-bold hover:bg-sky-500/30 flex items-center gap-1">
+                            <i data-lucide="file-down" class="w-3.5 h-3.5"></i><span>تحميل ملف sw.js</span>
+                        </button>
+                        <button onclick="downloadStandaloneApp()" class="px-3 py-1.5 rounded-xl bg-white/10 text-xs font-bold hover:bg-white/20 flex items-center gap-1">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i><span>تحميل نسخة HTML</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="pt-2 flex justify-end">
                 <button onclick="closeGuideModal()" class="px-5 py-2 rounded-xl bg-sky-500 text-slate-950 font-black text-sm">فهمت</button>
             </div>
         </div>
+    </div>
+
+    <div id="batteryWarning" class="battery-warning">
+        ⚠️ لتشغيل الأذان في الخلفية: اذهب لإعدادات البطارية وفعل "عدم التحسين" للتطبيق
     </div>
 
     <audio id="unlockAudio" preload="auto" playsinline></audio>
@@ -475,6 +515,15 @@
         let deferredInstallPrompt = null;
         let sharedAudioCtx = null;
         let audioUnlocked = false;
+        let unlockWavUrl = null;
+
+        let wakeLock = null;
+        let keepAliveAudio = null;
+        let keepAlivePausedByUser = false;
+        let bgWorker = null;
+        let lastFetchDay = '';
+        let isFetching = false;
+        let lastDayCheckAttempt = 0;
 
         const PRAYER_NAMES_AR = { Fajr:'الفجر', Sunrise:'الشروق', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء' };
         const METHOD_NAMES_AR = {
@@ -482,26 +531,62 @@
             9:'الكويت', 16:'دبي', 10:'قطر', 1:'كراتشي', 2:'أمريكا الشمالية', 13:'تركيا'
         };
 
-        // ✅ روابط MP3 مباشرة عبر HTTPS (تعمل على أي موقع)
         const ADHAN_FAJR_URL = 'https://archive.org/download/AthanMakkahFajr3111434SheikhAhmadBasnawi/Athan%20-%20Makkah%20Fajr%20%5B3-11-1434%5D%20Sheikh%20Ahmad%20Basnawi.mp3';
         const ADHAN_GENERAL_URL = 'https://www.islamcan.com/audio/adhan/azan1.mp3';
 
-        const SILENT_AUDIO = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=';
+        // ===== أيقونة التطبيق PNG حقيقية (أفضل توافقاً مع التثبيت والإشعارات) =====
+        function makePngIcon(size) {
+            try {
+                const c = document.createElement('canvas');
+                c.width = c.height = size;
+                const x = c.getContext('2d');
+                x.fillStyle = '#0f172a';
+                x.beginPath();
+                if (x.roundRect) x.roundRect(0, 0, size, size, size * 0.215);
+                else x.rect(0, 0, size, size);
+                x.fill();
+                x.fillStyle = '#38bdf8';
+                x.beginPath(); x.arc(size * 0.47, size * 0.55, size * 0.27, 0, Math.PI * 2); x.fill();
+                x.fillStyle = '#0f172a';
+                x.beginPath(); x.arc(size * 0.60, size * 0.47, size * 0.24, 0, Math.PI * 2); x.fill();
+                x.fillStyle = '#fbbf24';
+                x.beginPath(); x.arc(size * 0.66, size * 0.33, size * 0.045, 0, Math.PI * 2); x.fill();
+                return c.toDataURL('image/png');
+            } catch (e) {
+                return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f172a"/><circle cx="240" cy="282" r="138" fill="#38bdf8"/><circle cx="307" cy="241" r="123" fill="#0f172a"/><circle cx="338" cy="169" r="23" fill="#fbbf24"/></svg>');
+            }
+        }
+        const APP_ICON_URL = makePngIcon(512);
 
+        // ===== توليد صوت "شبه صامت" طويل (نبرة منخفضة جداً غير مسموعة عملياً) =====
+        // يجعل كروم يعتبر الصفحة "تشغّل صوتاً" فيعفيها من تجميد المؤقتات في الخلفية
+        function makeNearSilentWavUrl(seconds) {
+            const rate = 8000, n = rate * seconds;
+            const buf = new ArrayBuffer(44 + n * 2);
+            const v = new DataView(buf);
+            const ws = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+            ws(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); ws(8, 'WAVE'); ws(12, 'fmt ');
+            v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+            v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true);
+            v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+            ws(36, 'data'); v.setUint32(40, n * 2, true);
+            for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.round(Math.sin(i * 0.05) * 512), true);
+            return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+        }
+
+        // فتح قفل الصوت على عنصري التشغيل معاً (مهم لآيفون: كل عنصر يحتاج لمسة مستخدم)
         function tryUnlockAudio() {
             if (audioUnlocked) return;
-            const el = document.getElementById('unlockAudio');
-            if (!el) return;
-            el.src = SILENT_AUDIO;
-            el.volume = 0;
-            const p = el.play();
-            if (p) {
-                p.then(() => {
-                    el.pause();
-                    el.currentTime = 0;
-                    audioUnlocked = true;
-                }).catch(() => {});
-            }
+            if (!unlockWavUrl) unlockWavUrl = makeNearSilentWavUrl(1);
+            const els = [document.getElementById('unlockAudio'), document.getElementById('adhanAudioPlayer')];
+            els.forEach((el) => {
+                if (!el) return;
+                el.src = unlockWavUrl;
+                el.volume = 0;
+                const p = el.play();
+                if (p) p.then(() => { el.pause(); el.currentTime = 0; el.volume = 1; }).catch(() => {});
+            });
+            audioUnlocked = true;
             if (!sharedAudioCtx) {
                 try {
                     const AC = window.AudioContext || window.webkitAudioContext;
@@ -518,21 +603,247 @@
         document.addEventListener('keydown', tryUnlockAudio);
 
         window.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
             loadSettings();
             applyVisualThemeAndLayout();
             setupDynamicPWA();
+            setupMediaSession();
             loadCachedTimings();
-            // ✅ استعادة آخر أذان تم تشغيله (لمنع إعادة التشغيل عند التحديث)
             try {
                 lastTriggeredAdhanKey = localStorage.getItem('last_adhan_trigger_v17') || '';
             } catch (e) {}
             if (settings.autoGpsOnLoad) detectUserLocation(false);
             else fetchPrayerTimes();
-            setInterval(tickSecond, 1000);
-            tickSecond();
+
+            requestWakeLock();
+            startKeepAliveAudio();
+            startBackgroundTimer();
+            registerServiceWorker();
+            updateBgStatus();
+
+            // وضع المالك: يظهر فقط عند إضافة ?setup=1 أو #setup لرابط الموقع
+            if (location.search.indexOf('setup') !== -1 || location.hash.indexOf('setup') !== -1) {
+                const ob = document.getElementById('ownerSwBox');
+                if (ob) ob.classList.remove('hidden');
+            }
+
+            setTimeout(() => {
+                if (!keepAliveAudio && !keepAlivePausedByUser) showToast('المس الشاشة مرة واحدة لتفعيل أذان الخلفية 🔊');
+            }, 2000);
+
+            setTimeout(() => {
+                if (document.visibilityState === 'visible') showBatteryWarning();
+            }, 30000);
+
             setInterval(fetchPrayerTimes, 30 * 60 * 1000);
+            window.addEventListener('online', () => { fetchPrayerTimes(); });
         });
+
+        // ===== تحسينات الخلفية (نسخة مصححة) =====
+
+        function setupMediaSession() {
+            if (!('mediaSession' in navigator)) return;
+            try {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: 'أوقات الصلاة والأذان',
+                    artist: 'تطبيق المواقيت',
+                    album: 'مواقيت الصلاة اليومية',
+                    artwork: [{ src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }]
+                });
+                navigator.mediaSession.setActionHandler('play', () => {
+                    keepAlivePausedByUser = false;
+                    tryUnlockAudio();
+                    activateKeepAlive();
+                    navigator.mediaSession.playbackState = 'playing';
+                    updateBgStatus();
+                });
+                navigator.mediaSession.setActionHandler('pause', () => {
+                    stopAdhan();
+                    keepAlivePausedByUser = true;
+                    if (keepAliveAudio) keepAliveAudio.pause();
+                    navigator.mediaSession.playbackState = 'paused';
+                    updateBgStatus();
+                    showToast('تم إيقاف وضع الخلفية — اضغط ▶️ في مشغل الوسائط لإعادته');
+                });
+                navigator.mediaSession.setActionHandler('stop', () => { stopAdhan(); });
+            } catch (e) {}
+        }
+
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator && document.visibilityState === 'visible') {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {}
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                requestWakeLock();
+                tickSecond();
+                if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
+                if (keepAliveAudio && keepAliveAudio.paused && !keepAlivePausedByUser) {
+                    keepAliveAudio.play().catch(() => {});
+                }
+                updateBgStatus();
+            }
+        });
+
+        function activateKeepAlive() {
+            if (keepAliveAudio || keepAlivePausedByUser) return;
+            const a = new Audio(makeNearSilentWavUrl(5));
+            a.loop = true;
+            a.volume = 0.02;
+            // نبضة إضافية مقاومة للتجميد: أحداث الوسائط تستمر بالخلفية ما دام الصوت يعمل
+            a.addEventListener('timeupdate', () => { tickSecond(); });
+            a.play().then(() => {
+                keepAliveAudio = a;
+                if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+                updateBgStatus();
+                console.log('✓ Keep-Alive مفعّل — وضع الخلفية يعمل');
+            }).catch(() => { try { a.pause(); } catch (e) {} });
+        }
+
+        function startKeepAliveAudio() {
+            if (keepAliveAudio) return;
+            document.addEventListener('click', activateKeepAlive);
+            document.addEventListener('touchstart', activateKeepAlive, { passive: true });
+            document.addEventListener('keydown', activateKeepAlive);
+        }
+
+        function updateBgStatus() {
+            const el = document.getElementById('bgStatusBadge');
+            if (!el) return;
+            if (keepAlivePausedByUser) {
+                el.textContent = '⏸️ الخلفية: متوقفة (أعدها من مشغل الوسائط)';
+                el.style.color = '#fb7185';
+            } else if (keepAliveAudio && !keepAliveAudio.paused) {
+                el.textContent = '🔊 وضع الخلفية: مفعّل';
+                el.style.color = '#34d399';
+            } else {
+                el.textContent = 'المس الشاشة لتفعيل وضع الخلفية';
+                el.style.color = '#fbbf24';
+            }
+        }
+
+        const workerCode = `
+            let intervalId = null;
+            let targetTime = null;
+            let prayerKey = '';
+            self.onmessage = function(e) {
+                if (e.data.action === 'start') {
+                    intervalId = setInterval(() => {
+                        self.postMessage({ type: 'tick' });
+                        if (targetTime && Date.now() >= targetTime) {
+                            self.postMessage({ type: 'ALARM', prayerKey: prayerKey });
+                            targetTime = null;
+                        }
+                    }, 1000);
+                } else if (e.data.action === 'setAlarm') {
+                    targetTime = e.data.time;
+                    prayerKey = e.data.prayerKey;
+                } else if (e.data.action === 'stop') {
+                    if (intervalId) { clearInterval(intervalId); intervalId = null; }
+                    targetTime = null;
+                }
+            };
+        `;
+
+        function startBackgroundTimer() {
+            if (bgWorker) return;
+            try {
+                const blob = new Blob([workerCode], { type: 'application/javascript' });
+                bgWorker = new Worker(URL.createObjectURL(blob));
+                bgWorker.onmessage = (e) => {
+                    if (e.data.type === 'tick') {
+                        tickSecond();
+                    } else if (e.data.type === 'ALARM') {
+                        const key = e.data.prayerKey;
+                        if (!timingsData || !timingsData[key]) return;
+                        const d = (nextPrayerObj && nextPrayerObj.key === key)
+                            ? nextPrayerObj.date
+                            : parsePrayerDate(timingsData[key]);
+                        // نفس الحارس المستخدم في tickSecond لمنع الأذان المزدوج
+                        if (triggerAdhanOnce(key, d)) setTimeout(fetchPrayerTimes, 2500);
+                        calculateNextPrayer();
+                    }
+                };
+                bgWorker.postMessage({ action: 'start' });
+                console.log('✓ Background Worker مفعّل');
+            } catch (e) {
+                console.log('Worker غير متاح — استخدام مؤقت عادي');
+                setInterval(tickSecond, 1000);
+            }
+        }
+
+        // ===== Service Worker: ملف حقيقي ./sw.js (تسجيل blob مستحيل في المتصفحات) =====
+        const SW_FILE_CODE = `/* sw.js — ضعه بجانب صفحة التطبيق على استضافة https */
+const CACHE = 'prayer-shell-v1';
+self.addEventListener('install', (e) => {
+    self.skipWaiting();
+    e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./'])).catch(() => {}));
+});
+self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener('fetch', (e) => {
+    if (e.request.method !== 'GET') return;
+    e.respondWith(
+        fetch(e.request).then((res) => {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
+            return res;
+        }).catch(() => caches.match(e.request).then((m) => m || caches.match('./') || Response.error()))
+    );
+});
+self.addEventListener('notificationclick', (e) => {
+    e.notification.close();
+    e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+        for (const c of list) { if ('focus' in c) return c.focus(); }
+        return self.clients.openWindow('./');
+    }));
+});
+self.addEventListener('push', (e) => {
+    let data = {};
+    try { data = e.data ? e.data.json() : {}; } catch (err) {}
+    e.waitUntil(self.registration.showNotification(data.title || 'أوقات الصلاة', {
+        body: data.body || 'حان موعد الصلاة',
+        dir: 'rtl', lang: 'ar',
+        vibrate: [200, 100, 200],
+        requireInteraction: true,
+        tag: 'prayer-notification'
+    }));
+});
+`;
+
+        function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            if (!location.protocol.startsWith('http')) {
+                console.log('ℹ Service Worker يحتاج استضافة https ولا يعمل من ملف محلي');
+                return;
+            }
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('✓ Service Worker مسجل'))
+                .catch(() => console.log('ℹ ضع ملف sw.js بجانب الصفحة لتفعيل إشعارات أندرويد (افتح ?setup=1 لتحميله)'));
+        }
+
+        function downloadServiceWorkerFile() {
+            try {
+                const blob = new Blob([SW_FILE_CODE], { type: 'application/javascript;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'sw.js';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('ضع ملف sw.js بجانب صفحة التطبيق على الاستضافة');
+            } catch (e) { showToast('فشل تحميل الملف'); }
+        }
+
+        function showBatteryWarning() {
+            const warning = document.getElementById('batteryWarning');
+            warning.classList.add('show');
+            setTimeout(() => warning.classList.remove('show'), 8000);
+        }
+
+        // ===== الكود الأصلي (مع الإصلاحات) =====
 
         function loadSettings() {
             try {
@@ -582,6 +893,8 @@
         }
 
         async function fetchPrayerTimes() {
+            if (isFetching) return;
+            isFetching = true;
             const badge = document.getElementById('connectionBadge');
             try {
                 const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Riyadh';
@@ -600,9 +913,10 @@
                 if (json.code === 200 && json.data) {
                     timingsData = json.data.timings;
                     dateInfo = json.data.date;
+                    lastFetchDay = new Date().toDateString();
                     try {
                         localStorage.setItem('prayer_cached_data_v17', JSON.stringify({
-                            timings: timingsData, date: dateInfo, savedAt: new Date().toDateString()
+                            timings: timingsData, date: dateInfo, savedAt: lastFetchDay
                         }));
                     } catch (e) {}
                     if (badge) badge.textContent = 'متصل • محدث تلقائياً';
@@ -611,6 +925,8 @@
             } catch (error) {
                 if (badge) badge.textContent = 'وضع عدم الاتصال (بيانات محفوظة)';
                 loadCachedTimings();
+            } finally {
+                isFetching = false;
             }
         }
 
@@ -644,7 +960,7 @@
                 document.getElementById('displayGregorian').textContent = now.toLocaleDateString('ar');
             }
             const offsetDays = settings.hijriOffset || 0;
-            if (offsetDays === 0 && dateInfo?.hijri) {
+            if (offsetDays === 0 && dateInfo && dateInfo.hijri) {
                 const h = dateInfo.hijri;
                 document.getElementById('displayHijri').textContent = `${h.day} ${h.month.ar} ${h.year} هـ`;
                 return;
@@ -654,7 +970,7 @@
                 document.getElementById('displayHijri').textContent =
                     new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { day:'numeric', month:'long', year:'numeric' }).format(adjusted);
             } catch (e) {
-                if (dateInfo?.hijri) {
+                if (dateInfo && dateInfo.hijri) {
                     const h = dateInfo.hijri;
                     document.getElementById('displayHijri').textContent = `${h.day} ${h.month.ar} ${h.year} هـ`;
                 }
@@ -694,7 +1010,7 @@
                     </div>`;
                 container.appendChild(row);
             });
-            lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
         }
 
         function togglePrayerMute(prayerKey) {
@@ -743,29 +1059,50 @@
                 document.querySelectorAll('.prayer-row').forEach(el => el.classList.remove('active-prayer'));
                 const activeRow = document.getElementById(`row-${upcoming.key}`);
                 if (activeRow) activeRow.classList.add('active-prayer');
+
+                if (bgWorker) {
+                    bgWorker.postMessage({
+                        action: 'setAlarm',
+                        time: upcoming.date.getTime(),
+                        prayerKey: upcoming.key
+                    });
+                }
             }
+        }
+
+        // الحارس الموحّد: يمنع تشغيل الأذان مرتين (من العامل ومن المؤقت معاً)
+        function triggerAdhanOnce(prayerKey, prayerDate) {
+            const triggerId = `${prayerKey}-${prayerDate.toDateString()}`;
+            if (lastTriggeredAdhanKey === triggerId) return false;
+            lastTriggeredAdhanKey = triggerId;
+            try { localStorage.setItem('last_adhan_trigger_v17', triggerId); } catch (e) {}
+            onPrayerTimeArrived(prayerKey);
+            return true;
         }
 
         function tickSecond() {
             const now = new Date();
             const liveClockEl = document.getElementById('liveClockDisplay');
             if (liveClockEl) liveClockEl.textContent = `الآن: ${now.toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit', second:'2-digit' })}`;
+
+            if (keepAliveAudio && keepAliveAudio.paused && !keepAlivePausedByUser) {
+                keepAliveAudio.play().catch(() => {});
+            }
+            if (lastFetchDay && lastFetchDay !== now.toDateString() && Date.now() - lastDayCheckAttempt > 60000) {
+                lastDayCheckAttempt = Date.now();
+                fetchPrayerTimes();
+            }
             if (!nextPrayerObj || !timingsData) return;
 
             const diffMs = nextPrayerObj.date - now;
 
             if (diffMs <= 0) {
                 if (diffMs > -600000) {
-                    const triggerId = `${nextPrayerObj.key}-${nextPrayerObj.date.toDateString()}`;
-                    if (lastTriggeredAdhanKey !== triggerId) {
-                        lastTriggeredAdhanKey = triggerId;
-                        // ✅ حفظ في localStorage لمنع تكرار الأذان عند إعادة تحميل الصفحة
-                        try { localStorage.setItem('last_adhan_trigger_v17', triggerId); } catch (e) {}
-                        onPrayerTimeArrived(nextPrayerObj.key);
+                    if (triggerAdhanOnce(nextPrayerObj.key, nextPrayerObj.date)) {
+                        setTimeout(fetchPrayerTimes, 2500);
                     }
                 }
                 calculateNextPrayer();
-                setTimeout(() => { fetchPrayerTimes(); }, 2500);
                 return;
             }
 
@@ -823,13 +1160,27 @@
             if (prayerKey === 'Fajr') fajrNote.classList.remove('hidden');
             else fajrNote.classList.add('hidden');
             banner.classList.remove('hidden');
-            document.getElementById('quickStopAdhanBtn')?.classList.remove('hidden');
+            const qs = document.getElementById('quickStopAdhanBtn');
+            if (qs) qs.classList.remove('hidden');
+
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: titleText,
+                        artist: settings.cityAr || 'أوقات الصلاة',
+                        album: 'الأذان',
+                        artwork: [{ src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }]
+                    });
+                    navigator.mediaSession.playbackState = 'playing';
+                } catch (e) {}
+            }
 
             const audio = document.getElementById('adhanAudioPlayer');
             audio.pause();
             audio.currentTime = 0;
             audio.onerror = null;
             audio.onended = null;
+            audio.volume = 1;
 
             if (settings.adhanVoice === 'chime') { playSoftChime(); return; }
 
@@ -851,7 +1202,14 @@
                 sharedAudioCtx = null;
             }
             document.getElementById('adhanBanner').classList.add('hidden');
-            document.getElementById('quickStopAdhanBtn')?.classList.add('hidden');
+            const qs = document.getElementById('quickStopAdhanBtn');
+            if (qs) qs.classList.add('hidden');
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.playbackState =
+                        (keepAliveAudio && !keepAliveAudio.paused) ? 'playing' : 'paused';
+                } catch (e) {}
+            }
         }
 
         async function playSoftChime() {
@@ -882,10 +1240,25 @@
                 Notification.requestPermission();
             }
         }
-        function sendSystemNotification(title, body) {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                try { new Notification(title, { body, dir: 'rtl', lang: 'ar' }); } catch (e) {}
-            }
+
+        async function sendSystemNotification(title, body) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            const opts = {
+                body, dir: 'rtl', lang: 'ar',
+                tag: 'prayer-notification', renotify: true,
+                requireInteraction: true, vibrate: [200, 100, 200],
+                icon: APP_ICON_URL, badge: APP_ICON_URL
+            };
+            try {
+                const reg = ('serviceWorker' in navigator)
+                    ? await navigator.serviceWorker.getRegistration() : null;
+                if (reg) {
+                    await reg.showNotification(title, opts);
+                } else {
+                    const n = new Notification(title, opts);
+                    n.onclick = () => { window.focus(); n.close(); };
+                }
+            } catch (e) { console.log('فشل إرسال الإشعار:', e); }
         }
 
         function toggleSettingsModal(show) {
@@ -966,14 +1339,18 @@
         }
 
         function setupDynamicPWA() {
-            const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0f172a"/><path d="M330 140a130 130 0 1 0 90 220 110 110 0 1 1-90-220z" fill="#38bdf8"/><circle cx="360" cy="180" r="18" fill="#fbbf24"/></svg>`;
-            const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
             const manifest = {
                 name: 'أوقات الصلاة و الأذان', short_name: 'أوقات الصلاة',
-                description: 'تطبيق أوقات الصلاة و الأذان',
-                start_url: window.location.href, display: 'standalone',
+                description: 'تطبيق أوقات الصلاة و الأذان مع تنبيهات الخلفية',
+                id: 'prayer-times-adhan-app',
+                start_url: location.href.split('?')[0].split('#')[0],
+                scope: new URL('.', location.href).href,
+                display: 'standalone', orientation: 'any',
                 background_color: '#090d16', theme_color: '#0f172a',
-                icons: [{ src: iconUrl, sizes: '192x192', type: 'image/svg+xml' }, { src: iconUrl, sizes: '512x512', type: 'image/svg+xml' }]
+                icons: [
+                    { src: makePngIcon(192), sizes: '192x192', type: 'image/png', purpose: 'any' },
+                    { src: APP_ICON_URL, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+                ]
             };
             try {
                 const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
@@ -982,6 +1359,7 @@
                 document.head.appendChild(link);
             } catch (e) {}
             window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
+            window.addEventListener('appinstalled', () => { showToast('تم تثبيت التطبيق ✓'); deferredInstallPrompt = null; });
         }
 
         async function promptInstallApp() {
@@ -1022,4 +1400,8 @@
         }
     </script>
 </body>
+</html>
+    
+  </body>
+  
 </html>
