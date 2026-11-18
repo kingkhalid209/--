@@ -1,15 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <title>أوقات الصلاة و الأذان</title>
-    
-
-  </head>
-    
-  <body>
-  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -555,14 +544,19 @@
         function tryUnlockAudio() {
             if (audioUnlocked) return;
             if (!unlockWavUrl) unlockWavUrl = makeSilentWavUrl(1);
-            const els = [document.getElementById('unlockAudio'), document.getElementById('adhanAudioPlayer')];
-            els.forEach((el) => {
-                if (!el) return;
-                el.src = unlockWavUrl;
-                el.volume = 0;
-                const p = el.play();
-                if (p) p.then(() => { el.pause(); el.currentTime = 0; el.volume = 1; }).catch(() => {});
-            });
+            
+            // إبقاء تطبيق الخلفية نشطاً عبر تشغيل ملف صامت متكرر
+            const unlockEl = document.getElementById('unlockAudio');
+            unlockEl.src = unlockWavUrl;
+            unlockEl.loop = true;
+            unlockEl.volume = 0.01; // صوت صامت تماماً للحفاظ على نشاط التطبيق
+            unlockEl.play().catch(e => console.log('Audio unlock blocked:', e));
+            
+            const adhanEl = document.getElementById('adhanAudioPlayer');
+            adhanEl.src = unlockWavUrl;
+            adhanEl.volume = 0;
+            adhanEl.play().then(() => { adhanEl.pause(); adhanEl.currentTime = 0; adhanEl.volume = 1; }).catch(() => {});
+
             audioUnlocked = true;
             updateAudioStatus();
             if (!sharedAudioCtx) {
@@ -632,6 +626,8 @@
                 tickSecond();
                 if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
                 updateAudioStatus();
+                // محاولة استئناف النشاط عند العودة للتطبيق
+                tryUnlockAudio();
             }
         });
 
@@ -737,7 +733,15 @@ self.addEventListener('push', (e) => {
             if (!location.protocol.startsWith('http')) return;
             navigator.serviceWorker.register('./sw.js')
                 .then(() => console.log('✓ Service Worker مسجل'))
-                .catch(() => console.log('ℹ ضع ملف sw.js بجانب الصفحة لتفعيل الإشعارات'));
+                .catch(() => {
+                    // تسجيل تلقائي خفي إذا لم يكن الملف مرفوعاً على الاستضافة
+                    try {
+                        const blob = new Blob([SW_FILE_CODE], { type: 'application/javascript' });
+                        navigator.serviceWorker.register(URL.createObjectURL(blob)).then(()=>{
+                            console.log('✓ Service Worker مسجل تلقائياً من الداخل');
+                        }).catch(()=>{});
+                    } catch(e) {}
+                });
         }
 
         function downloadServiceWorkerFile() {
@@ -1155,7 +1159,10 @@ self.addEventListener('push', (e) => {
         }
 
         async function sendSystemNotification(title, body, withStopAction) {
-            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            if (!('Notification' in window)) return;
+            if (Notification.permission === 'default') await Notification.requestPermission();
+            if (Notification.permission !== 'granted') return;
+
             const opts = {
                 body, dir: 'rtl', lang: 'ar',
                 tag: 'prayer-notification', renotify: true,
@@ -1317,8 +1324,4 @@ self.addEventListener('push', (e) => {
         }
     </script>
 </body>
-</html>
-    
-  </body>
-  
 </html>
