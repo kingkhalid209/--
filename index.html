@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>أوقات الصلاة و الأذان</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -249,7 +260,7 @@
                     <div class="flex items-center justify-between">
                         <h4 class="font-extrabold text-sky-400 flex items-center gap-1.5">
                             <i data-lucide="globe" class="w-4 h-4"></i>
-                            <span>الموقع الجغرافي والمدينة</span>
+                            <span>الموقع الجغرافي و المدينة</span>
                         </h4>
                         <button onclick="detectUserLocation(true)" class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-400 text-xs font-bold hover:bg-sky-500/30 flex items-center gap-1">
                             <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
@@ -431,23 +442,24 @@
             <div class="space-y-3 text-xs sm:text-sm leading-relaxed">
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-emerald-400 block mb-1">📱 أندرويد:</strong>
-                    افتح في Chrome واضغط "تثبيت التطبيق"، ثم المس الشاشة مرة واحدة لتفعيل صوت الأذان 🔔 عند الأذان يوصلك إشعار فيه زر «إيقاف الأذان» توقفه منه مباشرة.
+                    افتح في Chrome واضغط "تثبيت التطبيق"، ثم المس الشاشة مرة واحدة واضغط «سماح» للإشعارات 🔔 عند الأذان يوصلك إشعار فيه زر «إيقاف الأذان» توقفه منه مباشرة.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
-                    افتح في Safari → المشاركة → "إضافة إلى الصفحة الرئيسية". المس الشاشة مرة لتفعيل الصوت، و أبقِ التطبيق مفتوحاً عند انتظار الأذان. الإيقاف من مشغل الوسائط على شاشة القفل أو بفتح الإشعار.
+                    افتح في Safari → المشاركة → "إضافة إلى الصفحة الرئيسية". افتح التطبيق من الأيقونة الجديدة، المس الشاشة و اضغط «سماح» للإشعارات، و أبقِ التطبيق مفتوحاً عند انتظار الأذان. الإيقاف من مشغل الوسائط على شاشة القفل أو بفتح الإشعار.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
                     <strong class="text-amber-400 block mb-1">💻 كمبيوتر/تلفزيون:</strong>
-                    ثبّته كتطبيق سطح مكتب من قائمة المتصفح.
+                    ثبّته كتطبيق سطح مكتب من قائمة المتصفح، واسمح بالإشعارات.
                 </div>
                 <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
                     <strong class="text-amber-400 block mb-1">ℹ️ كيف يعمل الأذان؟</strong>
-                    الأذان يعمل في موعده و التطبيق مفتوح، و يوصلك إشعار بإيقاف مباشر. لا يوجد أي صوت مستمر و الشاشة تنطفئ طبيعي. إذا انطفأت الشاشة أو أُغلق التطبيق قد يتأخر الأذان أو لا يعمل حسب نظام الجهاز.
+                    الأذان و الإشعار يعملان في وقتهم و التطبيق مفتوح — حتى لو فتحت تطبيقاً آخر و الشاشة شغالة. إذا انطفأت الشاشة تماماً، نظام الجوال يجمّد المواقع كلها (قانون من آيفون/أندرويد وليس عيباً بالتطبيق)، و أول ما ترجع للتطبيق يوصلك التنبيه فوراً إذا كان الوقت قريباً. لا يوجد أي صوت مستمر، و الشاشة تنطفئ طبيعي.
                 </div>
                 <div id="ownerSwBox" class="hidden p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
                     <strong class="text-sky-400 block mb-1">🔧 أدوات المالك (تظهر فقط عبر ?setup=1):</strong>
                     هذه الأدوات لك أنت يا صاحب الموقع — الزوار لا يرون هذا الصندوق أبداً.
+                    <div class="mt-1 text-amber-300 font-bold">⚠️ مهم جداً: لازم ترفع ملف sw.js بجانب index.html في مستودع GitHub — بدونه الإشعارات لا تعمل على الجوال.</div>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <button onclick="downloadServiceWorkerFile()" class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-bold hover:bg-sky-500/30 flex items-center gap-1">
                             <i data-lucide="file-down" class="w-3.5 h-3.5"></i><span>تحميل ملف sw.js</span>
@@ -542,16 +554,18 @@
         }
 
         function tryUnlockAudio() {
+            // طلب إذن الإشعارات مع أول لمسة (لازم يكون مع لمسة حقيقية وإلا المتصفح يرفضه)
+            requestNotificationPermission();
             if (audioUnlocked) return;
             if (!unlockWavUrl) unlockWavUrl = makeSilentWavUrl(1);
-            
-            // إبقاء تطبيق الخلفية نشطاً عبر تشغيل ملف صامت متكرر
+
+            // تفعيل الصوت بلمسة واحدة فقط — بدون أي صوت مستمر في الخلفية والشاشة تنطفئ طبيعي
             const unlockEl = document.getElementById('unlockAudio');
             unlockEl.src = unlockWavUrl;
-            unlockEl.loop = true;
-            unlockEl.volume = 0.01; // صوت صامت تماماً للحفاظ على نشاط التطبيق
-            unlockEl.play().catch(e => console.log('Audio unlock blocked:', e));
-            
+            unlockEl.loop = false;
+            unlockEl.volume = 0;
+            unlockEl.play().then(() => { unlockEl.pause(); unlockEl.currentTime = 0; }).catch(() => {});
+
             const adhanEl = document.getElementById('adhanAudioPlayer');
             adhanEl.src = unlockWavUrl;
             adhanEl.volume = 0;
@@ -612,24 +626,40 @@
         function updateAudioStatus() {
             const el = document.getElementById('audioStatusBadge');
             if (!el) return;
-            if (audioUnlocked) {
-                el.textContent = '🔔 الأذان جاهز — يعمل في موعده';
-                el.style.color = '#34d399';
-            } else {
+            const hasNotif = ('Notification' in window);
+            const perm = hasNotif ? Notification.permission : 'none';
+            if (!audioUnlocked) {
                 el.textContent = 'المس الشاشة مرة لتفعيل صوت الأذان';
                 el.style.color = '#fbbf24';
+            } else if (perm === 'granted') {
+                el.textContent = '🔔 الأذان والإشعارات جاهزة — تعمل في وقتها';
+                el.style.color = '#34d399';
+            } else if (perm === 'denied') {
+                el.textContent = '🔕 الإشعارات مقفلة — فعّلها من إعدادات المتصفح';
+                el.style.color = '#fb7185';
+            } else if (perm === 'default') {
+                el.textContent = '🔔 الصوت جاهز — المس الشاشة واسمح بالإشعارات';
+                el.style.color = '#fbbf24';
+            } else {
+                el.textContent = '🔔 الصوت جاهز — ثبّت التطبيق لتفعيل الإشعارات';
+                el.style.color = '#38bdf8';
+            }
+        }
+
+        function wakeUpCheck() {
+            tickSecond();
+            if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
+            updateAudioStatus();
+            if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+                sharedAudioCtx.resume().catch(() => {});
             }
         }
 
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') {
-                tickSecond();
-                if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
-                updateAudioStatus();
-                // محاولة استئناف النشاط عند العودة للتطبيق
-                tryUnlockAudio();
-            }
+            if (document.visibilityState === 'visible') wakeUpCheck();
         });
+        window.addEventListener('focus', wakeUpCheck);
+        window.addEventListener('pageshow', wakeUpCheck);
 
         const workerCode = `
             let intervalId = null;
@@ -655,6 +685,8 @@
         `;
 
         function startBackgroundTimer() {
+            // نبض احتياطي داخل الصفحة نفسها بجانب المؤقت الخفي — أضمن للاثنين معاً
+            setInterval(tickSecond, 1000);
             if (bgWorker) return;
             try {
                 const blob = new Blob([workerCode], { type: 'application/javascript' });
@@ -668,18 +700,29 @@
                         const d = (nextPrayerObj && nextPrayerObj.key === key)
                             ? nextPrayerObj.date
                             : parsePrayerDate(timingsData[key]);
-                        if (triggerAdhanOnce(key, d)) setTimeout(fetchPrayerTimes, 2500);
+                        const lateBy = Date.now() - d.getTime();
+                        if (lateBy > 10 * 60 * 1000) {
+                            // الجهاز كان نائماً فترة طويلة: إشعار فقط بدون تشغيل صوت متأخر عن وقته
+                            const id = `${key}-${d.toDateString()}`;
+                            if (lastTriggeredAdhanKey !== id) {
+                                lastTriggeredAdhanKey = id;
+                                try { localStorage.setItem('last_adhan_trigger_v17', id); } catch (e2) {}
+                                sendSystemNotification(`حان وقت أذان ${PRAYER_NAMES_AR[key]}`, 'وصل التنبيه متأخراً لأن الجهاز كان مغلقاً', false, true);
+                                showToast(`حان وقت أذان ${PRAYER_NAMES_AR[key]} أثناء إغلاق الجهاز`);
+                            }
+                            fetchPrayerTimes();
+                        } else if (triggerAdhanOnce(key, d)) {
+                            setTimeout(fetchPrayerTimes, 2500);
+                        }
                         calculateNextPrayer();
                     }
                 };
                 bgWorker.postMessage({ action: 'start' });
-            } catch (e) {
-                setInterval(tickSecond, 1000);
-            }
+            } catch (e) {}
         }
 
         const SW_FILE_CODE = `/* sw.js — ضعه بجانب صفحة التطبيق على استضافة https */
-const CACHE = 'prayer-shell-v2';
+const CACHE = 'prayer-shell-v3';
 self.addEventListener('install', (e) => {
     self.skipWaiting();
     e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./'])).catch(() => {}));
@@ -731,17 +774,22 @@ self.addEventListener('push', (e) => {
         function registerServiceWorker() {
             if (!('serviceWorker' in navigator)) return;
             if (!location.protocol.startsWith('http')) return;
+            // ملاحظة: تسجيل Service Worker من blob مستحيل في المتصفحات — لازم ملف sw.js حقيقي بجانب الصفحة
             navigator.serviceWorker.register('./sw.js')
-                .then(() => console.log('✓ Service Worker مسجل'))
-                .catch(() => {
-                    // تسجيل تلقائي خفي إذا لم يكن الملف مرفوعاً على الاستضافة
-                    try {
-                        const blob = new Blob([SW_FILE_CODE], { type: 'application/javascript' });
-                        navigator.serviceWorker.register(URL.createObjectURL(blob)).then(()=>{
-                            console.log('✓ Service Worker مسجل تلقائياً من الداخل');
-                        }).catch(()=>{});
-                    } catch(e) {}
-                });
+                .then(() => console.log('✓ Service Worker مسجل — الإشعارات مفعلة'))
+                .catch(() => console.warn('⚠️ ملف sw.js غير موجود بجانب الصفحة — ارفعه على الاستضافة لتعمل الإشعارات على الجوال'));
+        }
+
+        async function getSWRegistration() {
+            if (!('serviceWorker' in navigator)) return null;
+            try {
+                const reg = await Promise.race([
+                    navigator.serviceWorker.ready,
+                    new Promise((resolve) => setTimeout(() => resolve(null), 4000))
+                ]);
+                if (reg) return reg;
+                return (await navigator.serviceWorker.getRegistration()) || null;
+            } catch (e) { return null; }
         }
 
         function downloadServiceWorkerFile() {
@@ -1041,6 +1089,7 @@ self.addEventListener('push', (e) => {
         function onPrayerTimeArrived(prayerKey) {
             const prayerName = PRAYER_NAMES_AR[prayerKey];
             const isMuted = !!settings.mutedPrayers[prayerKey];
+            try { if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]); } catch (e) {}
             sendSystemNotification(`حان الآن موعد أذان ${prayerName}`, `حسب التوقيت المحلي لمدينة ${settings.cityAr}`, true);
             if (settings.adhanEnabled && !isMuted) playAdhanAudio(prayerKey, `أذان ${prayerName}`);
             else showToast(`حان الآن موعد أذان ${prayerName}`);
@@ -1049,7 +1098,7 @@ self.addEventListener('push', (e) => {
         function triggerPrePrayerNotification(prayerKey, mins) {
             const msg = `باقي ${mins} دقائق على أذان ${PRAYER_NAMES_AR[prayerKey]}`;
             showToast(msg);
-            sendSystemNotification('تنبيه اقتراب الصلاة', msg, false);
+            sendSystemNotification('تنبيه اقتراب الصلاة', msg, false, true);
         }
 
         function testAdhan(prayerKey) {
@@ -1106,6 +1155,7 @@ self.addEventListener('push', (e) => {
             audio.currentTime = 0;
             audio.onerror = null;
             audio.onended = null;
+            try { if (navigator.vibrate) navigator.vibrate(0); } catch (e) {}
             if (sharedAudioCtx) {
                 try { sharedAudioCtx.close(); } catch (e) {}
                 sharedAudioCtx = null;
@@ -1153,36 +1203,43 @@ self.addEventListener('push', (e) => {
         }
 
         function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
+            if (!('Notification' in window)) return;
+            if (Notification.permission !== 'default') return;
+            try {
+                Promise.resolve(Notification.requestPermission()).then((p) => {
+                    if (!p) return;
+                    updateAudioStatus();
+                    if (p === 'granted') showToast('تم تفعيل الإشعارات ✓');
+                    else if (p === 'denied') showToast('الإشعارات مرفوضة — فعّلها من إعدادات المتصفح');
+                }).catch(() => {});
+            } catch (e) {}
         }
 
-        async function sendSystemNotification(title, body, withStopAction) {
+        async function sendSystemNotification(title, body, withStopAction, silent = false) {
             if (!('Notification' in window)) return;
-            if (Notification.permission === 'default') await Notification.requestPermission();
             if (Notification.permission !== 'granted') return;
 
             const opts = {
                 body, dir: 'rtl', lang: 'ar',
                 tag: 'prayer-notification', renotify: true,
-                requireInteraction: true, vibrate: [200, 100, 200],
+                requireInteraction: !!withStopAction,
+                vibrate: silent ? [80] : [300, 150, 300],
+                silent: !!silent,
                 icon: APP_ICON_URL, badge: APP_ICON_URL
             };
             if (withStopAction) {
                 opts.actions = [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }];
                 opts.data = { stopAction: true };
             }
+            const reg = await getSWRegistration();
+            if (reg) {
+                try { await reg.showNotification(title, opts); return; } catch (e) {}
+            }
+            // احتياط بدون Service Worker: إشعار بسيط بدون أزرار (الأزرار هنا كانت تسبب فشل الإشعار بالكامل)
             try {
-                const reg = ('serviceWorker' in navigator)
-                    ? await navigator.serviceWorker.getRegistration() : null;
-                if (reg) {
-                    await reg.showNotification(title, opts);
-                } else {
-                    const n = new Notification(title, opts);
-                    n.onclick = () => { window.focus(); n.close(); };
-                }
-            } catch (e) { console.log('فشل إرسال الإشعار:', e); }
+                const n = new Notification(title, { body, dir: 'rtl', lang: 'ar', icon: APP_ICON_URL, tag: 'prayer-notification' });
+                n.onclick = () => { window.focus(); if (withStopAction) stopAdhan(); n.close(); };
+            } catch (e) { console.log('تعذر إرسال الإشعار:', e); }
         }
 
         function toggleSettingsModal(show) {
@@ -1324,4 +1381,9 @@ self.addEventListener('push', (e) => {
         }
     </script>
 </body>
+</html>
+    <script  src="./script.js"></script>
+
+  </body>
+  
 </html>
