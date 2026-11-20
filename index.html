@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=5.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="أوقات الصلاة">
-    <meta name="mobile-web-app-capable" content="yes">
     <title>أوقات الصلاة و الأذان</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,9 +90,11 @@
         }
         .adhan-ringing { animation: pulse-ring 1.8s infinite; }
         @media (prefers-reduced-motion: reduce) { .adhan-ringing { animation: none; } }
+        * { scrollbar-width: thin; scrollbar-color: rgba(148, 163, 184, 0.35) transparent; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
         .test-prayer-btn {
             padding: 0.5rem 0.6rem; border-radius: 0.75rem; font-size: 0.7rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 0.3rem;
@@ -105,52 +107,29 @@
         .test-regular:hover { background: rgba(56, 189, 248, 0.25); }
         .test-stop { background: rgba(244, 63, 94, 0.15); color: #fb7185; border-color: rgba(251, 113, 133, 0.3); }
         .test-stop:hover { background: rgba(244, 63, 94, 0.25); }
-        .bg-status {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.3rem 0.7rem; border-radius: 9999px;
-            font-size: 10px; font-weight: 700;
-        }
-        .bg-status.active { background: rgba(52, 211, 153, 0.15); color: #34d399; }
-        .bg-status.inactive { background: rgba(251, 113, 133, 0.15); color: #fb7185; }
-        .bg-status.pending { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-        .status-dot {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: currentColor; display: inline-block;
-        }
-        .bg-status.active .status-dot { animation: blink 1.5s infinite; }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
     </style>
 </head>
 <body data-theme="dark">
     <div class="ambient-bg"></div>
 
-    <header class="w-full max-w-5xl mx-auto flex items-center justify-between gap-2 flex-wrap" style="padding: var(--pad-outer) var(--pad-outer) 0;">
+    <header class="w-full max-w-5xl mx-auto flex items-center justify-between gap-2" style="padding: var(--pad-outer) var(--pad-outer) 0;">
         <div class="flex items-center gap-2.5">
             <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-sky-500/20 border border-sky-400/30 text-sky-400 shadow-lg shrink-0">
                 <i data-lucide="moon-star" class="w-5 h-5"></i>
             </div>
             <div>
                 <h1 class="font-extrabold text-base sm:text-lg leading-tight tracking-tight">أوقات الصلاة و الأذان</h1>
-                <div class="flex items-center gap-2 mt-0.5">
-                    <p class="text-xs opacity-70" id="connectionBadge">متصل • تحديث تلقائي</p>
-                    <span id="bgStatus" class="bg-status pending" style="display:none">
-                        <span class="status-dot"></span>
-                        <span id="bgStatusText">جاري التفعيل</span>
-                    </span>
-                </div>
+                <p class="text-xs opacity-70" id="connectionBadge">متصل • تحديث تلقائي</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
             <button onclick="detectUserLocation(true)" title="تحديد موقعي تلقائياً" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-sky-500/15 hover:bg-sky-500/25 border border-sky-400/30 text-sky-400 transition active:scale-95">
                 <i data-lucide="locate-fixed" class="w-4 h-4"></i>
-                <span class="hidden sm:inline">موقعي</span>
+                <span class="hidden sm:inline">موقعي التلقائي</span>
             </button>
             <button id="installAppBtn" onclick="promptInstallApp()" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-400 transition active:scale-95">
                 <i data-lucide="smartphone" class="w-4 h-4"></i>
-                <span>تثبيت</span>
+                <span>تثبيت التطبيق</span>
             </button>
             <button onclick="toggleSettingsModal(true)" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/15 transition active:scale-95">
                 <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
@@ -173,7 +152,7 @@
             </div>
             <button onclick="stopAdhan()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg transition active:scale-95 shrink-0">
                 <i data-lucide="square" class="w-4 h-4 fill-current"></i>
-                <span>إيقاف</span>
+                <span>إيقاف الأذان</span>
             </button>
         </div>
     </div>
@@ -238,7 +217,7 @@
                 <span id="audioStatusBadge" class="font-bold">المس الشاشة مرة لتفعيل صوت الأذان</span>
                 <button onclick="openGuideModal()" class="underline hover:opacity-100 flex items-center gap-1">
                     <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
-                    <span>طريقة التثبيت</span>
+                    <span>طريقة التثبيت كـ ويدجت / تطبيق</span>
                 </button>
             </div>
         </div>
@@ -248,10 +227,14 @@
             <button onclick="setTheme('dark')" class="px-2.5 py-1.5 rounded-xl bg-slate-800 text-sky-400 border border-sky-400/30 font-bold hover:scale-105 transition">زجاجي داكن</button>
             <button onclick="setTheme('gold')" class="px-2.5 py-1.5 rounded-xl bg-stone-900 text-amber-400 border border-amber-400/30 font-bold hover:scale-105 transition">ملكي ذهبي</button>
             <button onclick="setTheme('light')" class="px-2.5 py-1.5 rounded-xl bg-white text-slate-900 border border-slate-300 font-bold hover:scale-105 transition">نهاري مضيء</button>
+            <span class="opacity-30 hidden sm:inline">|</span>
+            <span class="opacity-65 px-2 font-bold">العرض:</span>
+            <button onclick="setLayout('card')" class="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 font-bold transition">بطاقة متكاملة</button>
+            <button onclick="setLayout('bar')" class="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 font-bold transition">شريط أفقي</button>
+            <button onclick="setLayout('compact')" class="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 font-bold transition">مختصر</button>
         </div>
     </main>
 
-    <!-- نافذة الإعدادات -->
     <div id="settingsModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
         <div class="glass-panel w-full max-w-2xl rounded-3xl p-5 sm:p-6 max-h-[90vh] overflow-y-auto border border-white/20 shadow-2xl">
             <div class="flex items-center justify-between pb-4 mb-5 border-b border-white/10">
@@ -296,24 +279,24 @@
                                 <option value="Buraidah|Saudi Arabia|بريدة|السعودية|4">بريدة - السعودية</option>
                             </optgroup>
                             <optgroup label="دول الخليج والعالم العربي">
-                                <option value="Kuwait City|Kuwait|الكويت|الكويت|9">الكويت</option>
-                                <option value="Dubai|United Arab Emirates|دبي|الإمارات|16">دبي</option>
-                                <option value="Doha|Qatar|الدوحة|قطر|10">الدوحة</option>
-                                <option value="Cairo|Egypt|القاهرة|مصر|5">القاهرة</option>
-                                <option value="Amman|Jordan|عمّان|الأردن|3">عمّان</option>
-                                <option value="Jerusalem|Palestine|القدس|فلسطين|3">القدس</option>
-                                <option value="London|United Kingdom|لندن|بريطانيا|3">لندن</option>
+                                <option value="Kuwait City|Kuwait|الكويت|الكويت|9">الكويت - الكويت</option>
+                                <option value="Dubai|United Arab Emirates|دبي|الإمارات|16">دبي - الإمارات</option>
+                                <option value="Doha|Qatar|الدوحة|قطر|10">الدوحة - قطر</option>
+                                <option value="Cairo|Egypt|القاهرة|مصر|5">القاهرة - مصر</option>
+                                <option value="Amman|Jordan|عمّان|الأردن|3">عمّان - الأردن</option>
+                                <option value="Jerusalem|Palestine|القدس|فلسطين|3">القدس - فلسطين</option>
+                                <option value="London|United Kingdom|لندن|بريطانيا|3">لندن - بريطانيا</option>
                             </optgroup>
                         </select>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                         <div>
                             <label class="block text-xs opacity-70 mb-1">اسم المدينة</label>
-                            <input type="text" id="customCityInput" placeholder="مثال: شقراء" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none focus:border-sky-400">
+                            <input type="text" id="customCityInput" placeholder="مثال: شقراء" oninput="delete this.dataset.en" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none focus:border-sky-400">
                         </div>
                         <div>
                             <label class="block text-xs opacity-70 mb-1">اسم الدولة</label>
-                            <input type="text" id="customCountryInput" placeholder="مثال: السعودية" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none focus:border-sky-400">
+                            <input type="text" id="customCountryInput" placeholder="مثال: السعودية" oninput="delete this.dataset.en" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none focus:border-sky-400">
                         </div>
                     </div>
                 </div>
@@ -325,7 +308,7 @@
                     </h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs opacity-70 mb-1">جهة التقويم</label>
+                            <label class="block text-xs opacity-70 mb-1">جهة التقويم و الحساب</label>
                             <select id="calcMethodSelect" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none">
                                 <option value="4">تقويم أم القرى</option>
                                 <option value="3">رابطة العالم الإسلامي</option>
@@ -360,7 +343,7 @@
                         <div class="flex items-center pt-5">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="checkbox" id="showSunriseCheckbox" checked class="w-4 h-4 accent-sky-400 rounded">
-                                <span class="text-xs sm:text-sm">إظهار الشروق</span>
+                                <span class="text-xs sm:text-sm">إظهار الشروق في القائمة</span>
                             </label>
                         </div>
                     </div>
@@ -375,12 +358,12 @@
                         <div>
                             <label class="block text-xs opacity-70 mb-1">صوت المؤذن</label>
                             <select id="adhanVoiceSelect" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none">
-                                <option value="standard">أذان مكة</option>
+                                <option value="standard">أذان مكة (افتراضي)</option>
                                 <option value="chime">نغمة هادئة (بدون إنترنت)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs opacity-70 mb-1">التنبيه قبل الصلاة</label>
+                            <label class="block text-xs opacity-70 mb-1">التنبيه قبل الصلاة (بدون صوت)</label>
                             <select id="preAlertSelect" class="w-full p-2.5 rounded-xl bg-slate-900/90 text-white border border-white/15 outline-none">
                                 <option value="0">إيقاف</option>
                                 <option value="5">قبل 5 دقائق</option>
@@ -393,34 +376,47 @@
                         <input type="checkbox" id="enableAdhanCheckbox" checked class="w-4 h-4 accent-sky-400 rounded">
                         <span class="text-xs sm:text-sm font-bold">تشغيل الأذان تلقائياً في وقته</span>
                     </label>
+                    <button type="button" onclick="enableNotificationsNow()" class="w-full px-3 py-2 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-bold hover:bg-sky-500/30 flex items-center justify-center gap-1.5 transition">
+                        <i data-lucide="bell" class="w-3.5 h-3.5"></i>
+                        <span>تفعيل الإشعارات الآن</span>
+                    </button>
 
                     <div class="mt-3 pt-3 border-t border-white/10 space-y-2">
                         <div class="flex items-center gap-1.5">
                             <i data-lucide="music" class="w-3.5 h-3.5 text-sky-400"></i>
-                            <label class="block text-xs font-extrabold opacity-85">اختبار صوت الأذان:</label>
+                            <label class="block text-xs font-extrabold opacity-85">اختبار صوت الأذان لكل صلاة:</label>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                            <button onclick="testAdhan('Fajr')" class="test-prayer-btn test-fajr"><i data-lucide="volume-2" class="w-3 h-3"></i><span>الفجر</span></button>
-                            <button onclick="testAdhan('Dhuhr')" class="test-prayer-btn test-regular"><i data-lucide="volume-2" class="w-3 h-3"></i><span>الظهر</span></button>
-                            <button onclick="testAdhan('Asr')" class="test-prayer-btn test-regular"><i data-lucide="volume-2" class="w-3 h-3"></i><span>العصر</span></button>
-                            <button onclick="testAdhan('Maghrib')" class="test-prayer-btn test-regular"><i data-lucide="volume-2" class="w-3 h-3"></i><span>المغرب</span></button>
-                            <button onclick="testAdhan('Isha')" class="test-prayer-btn test-regular"><i data-lucide="volume-2" class="w-3 h-3"></i><span>العشاء</span></button>
-                            <button onclick="stopAdhan()" class="test-prayer-btn test-stop"><i data-lucide="square" class="w-3 h-3 fill-current"></i><span>إيقاف</span></button>
+                            <button type="button" onclick="testAdhan('Fajr')" class="test-prayer-btn test-fajr">
+                                <i data-lucide="volume-2" class="w-3 h-3"></i><span>أذان الفجر</span>
+                            </button>
+                            <button type="button" onclick="testAdhan('Dhuhr')" class="test-prayer-btn test-regular">
+                                <i data-lucide="volume-2" class="w-3 h-3"></i><span>أذان الظهر</span>
+                            </button>
+                            <button type="button" onclick="testAdhan('Asr')" class="test-prayer-btn test-regular">
+                                <i data-lucide="volume-2" class="w-3 h-3"></i><span>أذان العصر</span>
+                            </button>
+                            <button type="button" onclick="testAdhan('Maghrib')" class="test-prayer-btn test-regular">
+                                <i data-lucide="volume-2" class="w-3 h-3"></i><span>أذان المغرب</span>
+                            </button>
+                            <button type="button" onclick="testAdhan('Isha')" class="test-prayer-btn test-regular">
+                                <i data-lucide="volume-2" class="w-3 h-3"></i><span>أذان العشاء</span>
+                            </button>
+                            <button type="button" onclick="stopAdhan()" class="test-prayer-btn test-stop">
+                                <i data-lucide="square" class="w-3 h-3 fill-current"></i><span>إيقاف</span>
+                            </button>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-500/8 border border-emerald-500/20 text-[10px] sm:text-xs leading-relaxed space-y-1">
+                            <div class="flex items-start gap-1.5">
+                                <span class="text-emerald-400 font-black shrink-0">✓</span>
+                                <span><b class="text-emerald-400">أذان الفجر:</b> يحتوي على «الصلاة خير من النوم».</span>
+                            </div>
+                            <div class="flex items-start gap-1.5">
+                                <span class="text-sky-400 font-black shrink-0">✓</span>
+                                <span><b class="text-sky-400">إيقاف من الإشعار مباشرة</b> — بدون فتح التطبيق، و الأذان فقط في وقته بدون أي صوت آخر.</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- قسم الحالة الجديد -->
-                <div class="p-4 rounded-2xl bg-sky-500/5 border border-sky-500/20 space-y-2">
-                    <h4 class="font-extrabold text-sky-400 flex items-center gap-1.5">
-                        <i data-lucide="activity" class="w-4 h-4"></i>
-                        <span>حالة الخلفية والإشعارات</span>
-                    </h4>
-                    <div id="statusDetails" class="text-xs space-y-1.5 opacity-85"></div>
-                    <button onclick="requestAllPermissions()" class="w-full mt-2 px-4 py-2 rounded-xl bg-sky-500 text-slate-950 font-black text-xs hover:bg-sky-400 transition">
-                        <i data-lucide="shield-check" class="w-3.5 h-3.5 inline ml-1"></i>
-                        تفعيل كل الأذونات مرة واحدة
-                    </button>
                 </div>
             </div>
 
@@ -431,40 +427,44 @@
         </div>
     </div>
 
-    <!-- نافذة الدليل -->
     <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border border-white/20 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                <h3 class="text-lg font-black text-sky-400">تفعيل الأذان في الخلفية</h3>
+                <h3 class="text-lg font-black text-sky-400">تثبيت التطبيق و الويدجت</h3>
                 <button onclick="closeGuideModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <div class="space-y-3 text-xs sm:text-sm leading-relaxed">
-                <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
-                    <strong class="text-emerald-400 block mb-1">📱 أندرويد (الحل الأفضل):</strong>
-                    <ol class="list-decimal pr-4 space-y-1">
-                        <li>اضغط "تثبيت التطبيق" في الأعلى</li>
-                        <li>افتح التطبيق من الأيقونة الجديدة (ليس Chrome)</li>
-                        <li>المس الشاشة واسمح بالإشعارات</li>
-                        <li>الإعدادات → التطبيقات → هذا التطبيق → البطارية → <b>غير مقيد</b></li>
-                        <li>فعّل "السماح بالنشاط في الخلفية"</li>
-                    </ol>
-                </div>
-                <div class="p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
-                    <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
-                    Safari → المشاركة → "إضافة إلى الصفحة الرئيسية". افتح من الأيقونة الجديدة واسمح بالإشعارات.
-                    <br><b class="text-amber-300">ملاحظة:</b> Apple تمنع تشغيل الصوت في الخلفية — اترك التطبيق في الخلفية (لا تغلقه).
-                </div>
-                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
-                    <strong class="text-amber-400 block mb-1">💻 كمبيوتر:</strong>
-                    Chrome → القائمة → "تثبيت التطبيق" واسمح بالإشعارات. يعمل بشكل ممتاز.
+                <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <strong class="text-emerald-400 block mb-1">📱 أندرويد:</strong>
+                    افتح في Chrome واضغط "تثبيت التطبيق"، ثم المس الشاشة مرة واحدة واضغط «سماح» للإشعارات 🔔 عند الأذان يوصلك إشعار فيه زر «إيقاف الأذان» توقفه منه مباشرة.
                 </div>
                 <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <strong class="text-white block mb-1">⚙️ إعدادات البطارية (مهم جداً):</strong>
-                    إذا لم يعمل الأذان في الخلفية، اذهب إلى:
-                    <br><b class="text-sky-400">الإعدادات → التطبيقات → المتصفح/التطبيق → البطارية → غير مقيد</b>
-                    <br>وأيضاً: <b class="text-sky-400">الإعدادات → البطارية → تحسين البطارية → كل التطبيقات → هذا التطبيق → لا تحسّن</b>
+                    <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
+                    افتح في Safari → المشاركة → "إضافة إلى الصفحة الرئيسية". افتح التطبيق من الأيقونة الجديدة، المس الشاشة و اضغط «سماح» للإشعارات، و أبقِ التطبيق مفتوحاً عند انتظار الأذان. الإيقاف من مشغل الوسائط على شاشة القفل أو بفتح الإشعار.
+                </div>
+                <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+                    <strong class="text-amber-400 block mb-1">💻 كمبيوتر/تلفزيون:</strong>
+                    ثبّته كتطبيق سطح مكتب من قائمة المتصفح، واسمح بالإشعارات.
+                </div>
+                <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+                    <strong class="text-amber-400 block mb-1">ℹ️ كيف يعمل الأذان؟</strong>
+                    الأذان و الإشعار يعملان في وقتهم و التطبيق مفتوح — حتى لو فتحت تطبيقاً آخر و الشاشة شغالة. إذا انطفأت الشاشة تماماً، نظام الجوال يجمّد المواقع كلها (قانون من آيفون/أندرويد وليس عيباً بالتطبيق)، و أول ما ترجع للتطبيق يوصلك التنبيه فوراً إذا كان الوقت قريباً. لا يوجد أي صوت مستمر، و الشاشة تنطفئ طبيعي.
+                </div>
+                <div id="ownerSwBox" class="hidden p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
+                    <strong class="text-sky-400 block mb-1">🔧 أدوات المالك (تظهر فقط عبر ?setup=1):</strong>
+                    هذه الأدوات لك أنت يا صاحب الموقع — الزوار لا يرون هذا الصندوق أبداً.
+                    <div id="swStatusLine" class="mt-1 font-bold text-amber-300">⏳ جاري فحص ملف sw.js...</div>
+                    <div class="mt-1 text-amber-300 font-bold">⚠️ مهم جداً: لازم ترفع ملف sw.js بجانب index.html في مستودع GitHub — بدونه الإشعارات لا تعمل على الجوال.</div>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <button onclick="downloadServiceWorkerFile()" class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-bold hover:bg-sky-500/30 flex items-center gap-1">
+                            <i data-lucide="file-down" class="w-3.5 h-3.5"></i><span>تحميل ملف sw.js</span>
+                        </button>
+                        <button onclick="downloadStandaloneApp()" class="px-3 py-1.5 rounded-xl bg-white/10 text-xs font-bold hover:bg-white/20 flex items-center gap-1">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i><span>تحميل نسخة HTML</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="pt-2 flex justify-end">
@@ -477,10 +477,6 @@
     <audio id="adhanAudioPlayer" preload="auto" playsinline></audio>
 
     <script>
-        // ═══════════════════════════════════════════════════════
-        //   إعدادات عامة ومتغيرات
-        // ═══════════════════════════════════════════════════════
-        
         const DEFAULT_SETTINGS = {
             city: 'Shaqra', country: 'Saudi Arabia',
             cityAr: 'شقراء', countryAr: 'السعودية',
@@ -502,11 +498,11 @@
         let sharedAudioCtx = null;
         let audioUnlocked = false;
         let unlockWavUrl = null;
+
         let bgWorker = null;
         let lastFetchDay = '';
         let isFetching = false;
-        let wakeLock = null;
-        let swRegistration = null;
+        let lastDayCheckAttempt = 0;
 
         const PRAYER_NAMES_AR = { Fajr:'الفجر', Sunrise:'الشروق', Dhuhr:'الظهر', Asr:'العصر', Maghrib:'المغرب', Isha:'العشاء' };
         const METHOD_NAMES_AR = {
@@ -517,9 +513,6 @@
         const ADHAN_FAJR_URL = 'https://archive.org/download/AthanMakkahFajr3111434SheikhAhmadBasnawi/Athan%20-%20Makkah%20Fajr%20%5B3-11-1434%5D%20Sheikh%20Ahmad%20Basnawi.mp3';
         const ADHAN_GENERAL_URL = 'https://www.islamcan.com/audio/adhan/azan1.mp3';
 
-        // ═══════════════════════════════════════════════════════
-        //   توليد الأيقونة ديناميكياً
-        // ═══════════════════════════════════════════════════════
         function makePngIcon(size) {
             try {
                 const c = document.createElement('canvas');
@@ -557,9 +550,6 @@
             return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   فتح الصوت (مطلوب من iOS و Chrome)
-        // ═══════════════════════════════════════════════════════
         function tryUnlockAudio() {
             requestNotificationPermission();
             if (audioUnlocked) return;
@@ -593,168 +583,90 @@
         document.addEventListener('touchstart', tryUnlockAudio, { passive: true });
         document.addEventListener('keydown', tryUnlockAudio);
 
-        // ═══════════════════════════════════════════════════════
-        //   Service Worker Registration + Periodic Sync
-        // ═══════════════════════════════════════════════════════
-        async function registerServiceWorker() {
-            if (!('serviceWorker' in navigator)) {
-                updateBgStatus('no-sw', 'المتصفح لا يدعم الخلفية');
-                return;
-            }
-            if (!location.protocol.startsWith('http')) {
-                updateBgStatus('no-sw', 'يتطلب HTTPS أو localhost');
-                return;
-            }
-            
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+            loadSettings();
+            applyVisualThemeAndLayout();
+            setupDynamicPWA();
+            loadCachedTimings();
             try {
-                swRegistration = await navigator.serviceWorker.register('./sw.js', {
-                    scope: './'
-                });
-                console.log('✓ Service Worker مسجل');
-                
-                // محاولة تسجيل Periodic Sync
-                await setupPeriodicSync();
-                
-                // استقبال الرسائل من الـ SW
+                lastTriggeredAdhanKey = localStorage.getItem('last_adhan_trigger_v17') || '';
+            } catch (e) {}
+            if (settings.autoGpsOnLoad) detectUserLocation(false);
+            else fetchPrayerTimes();
+
+            startBackgroundTimer();
+            registerServiceWorker();
+            updateAudioStatus();
+
+            if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.addEventListener('message', (e) => {
-                    if (!e.data) return;
-                    if (e.data.type === 'STOP_ADHAN') stopAdhan();
-                    if (e.data.type === 'CHECK_PRAYER_NOW') checkAndTriggerPrayer();
-                    if (e.data.type === 'FOCUS_APP') window.focus();
-                    if (e.data.type === 'RESYNC_TIMES') fetchPrayerTimes();
+                    if (e.data && e.data.type === 'STOP_ADHAN') stopAdhan();
                 });
-                
-                updateBgStatus('sw-ready', 'Service Worker جاهز');
-            } catch (e) {
-                console.warn('⚠ فشل تسجيل SW:', e);
-                updateBgStatus('sw-error', 'فشل التسجيل');
             }
-        }
 
-        async function setupPeriodicSync() {
-            if (!swRegistration) return;
-            
-            // Periodic Background Sync
-            if ('periodicSync' in swRegistration) {
-                try {
-                    const status = await navigator.permissions.query({
-                        name: 'periodic-background-sync'
-                    });
-                    
-                    if (status.state === 'granted') {
-                        await swRegistration.periodicSync.register('prayer-check', {
-                            minInterval: 30 * 60 * 1000 // كل 30 دقيقة
-                        });
-                        console.log('✓ Periodic Sync مفعّل');
-                        updateBgStatus('active', 'الخلفية مفعّلة ✓');
-                    } else if (status.state === 'prompt') {
-                        updateBgStatus('pending', 'يحتاج تثبيت التطبيق');
-                    } else {
-                        updateBgStatus('denied', 'المتصفح يمنع الخلفية');
-                    }
-                } catch (e) {
-                    console.warn('Periodic Sync غير متاح:', e);
-                }
+            if (location.search.indexOf('setup') !== -1 || location.hash.indexOf('setup') !== -1) {
+                const ob = document.getElementById('ownerSwBox');
+                if (ob) ob.classList.remove('hidden');
+                checkSwFileStatus();
             }
-            
-            // Background Sync للمزامنة
-            if ('sync' in swRegistration) {
-                try {
-                    await swRegistration.sync.register('prayer-sync');
-                    console.log('✓ Background Sync مسجل');
-                } catch (e) {}
-            }
-        }
 
-        // ═══════════════════════════════════════════════════════
-        //   Wake Lock API — منع النوم عند الأذان
-        // ═══════════════════════════════════════════════════════
-        async function requestWakeLock() {
-            if (!('wakeLock' in navigator)) return;
-            try {
-                wakeLock = await navigator.wakeLock.request('screen');
-                console.log('✓ Wake Lock مفعّل');
-                wakeLock.addEventListener('release', () => {
-                    console.log('Wake Lock أطلق');
-                });
-            } catch (e) {
-                console.warn('Wake Lock فشل:', e);
-            }
-        }
+            setTimeout(() => {
+                if (!audioUnlocked) showToast('المس الشاشة مرة واحدة لتفعيل صوت الأذان 🔔');
+            }, 2000);
 
-        async function releaseWakeLock() {
-            if (wakeLock) {
-                try {
-                    await wakeLock.release();
-                    wakeLock = null;
-                } catch (e) {}
-            }
-        }
-
-        // إعادة تفعيل Wake Lock عند العودة
-        document.addEventListener('visibilitychange', async () => {
-            if (document.visibilityState === 'visible') {
-                wakeUpCheck();
-                if (nextPrayerObj) {
-                    const now = new Date();
-                    const diff = nextPrayerObj.date - now;
-                    // إذا بقي أقل من 5 دقائق، فعّل Wake Lock
-                    if (diff > 0 && diff < 5 * 60 * 1000) {
-                        await requestWakeLock();
-                    }
-                }
-            }
+            setInterval(fetchPrayerTimes, 30 * 60 * 1000);
+            window.addEventListener('online', () => { fetchPrayerTimes(); });
         });
 
-        // ═══════════════════════════════════════════════════════
-        //   Media Session API — التحكم من شاشة القفل
-        // ═══════════════════════════════════════════════════════
-        function setupMediaSession(prayerName) {
-            if (!('mediaSession' in navigator)) return;
-            try {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: `أذان ${prayerName}`,
-                    artist: settings.cityAr || 'مواقيت الصلاة',
-                    album: 'الأذان',
-                    artwork: [
-                        { src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }
-                    ]
-                });
-                navigator.mediaSession.playbackState = 'playing';
-                navigator.mediaSession.setActionHandler('pause', () => stopAdhan());
-                navigator.mediaSession.setActionHandler('stop', () => stopAdhan());
-                navigator.mediaSession.setActionHandler('seekto', () => {});
-                navigator.mediaSession.setActionHandler('seekbackward', () => {});
-                navigator.mediaSession.setActionHandler('seekforward', () => {});
-                console.log('✓ Media Session جاهز');
-            } catch (e) {
-                console.warn('Media Session فشل:', e);
+        function updateAudioStatus() {
+            const el = document.getElementById('audioStatusBadge');
+            if (!el) return;
+            const hasNotif = ('Notification' in window);
+            const perm = hasNotif ? Notification.permission : 'none';
+            if (!audioUnlocked) {
+                el.textContent = 'المس الشاشة مرة لتفعيل صوت الأذان';
+                el.style.color = '#fbbf24';
+            } else if (perm === 'granted') {
+                el.textContent = '🔔 الأذان و الإشعارات جاهزة — تعمل في وقتها';
+                el.style.color = '#34d399';
+            } else if (perm === 'denied') {
+                el.textContent = '🔕 الإشعارات مقفلة — فعّلها من إعدادات المتصفح';
+                el.style.color = '#fb7185';
+            } else if (perm === 'default') {
+                el.textContent = '🔔 الصوت جاهز — المس الشاشة واسمح بالإشعارات';
+                el.style.color = '#fbbf24';
+            } else {
+                el.textContent = '🔔 الصوت جاهز — ثبّت التطبيق لتفعيل الإشعارات';
+                el.style.color = '#38bdf8';
             }
         }
 
-        function clearMediaSession() {
-            if (!('mediaSession' in navigator)) return;
-            try {
-                navigator.mediaSession.playbackState = 'none';
-                navigator.mediaSession.metadata = null;
-                navigator.mediaSession.setActionHandler('pause', null);
-                navigator.mediaSession.setActionHandler('stop', null);
-            } catch (e) {}
+        function wakeUpCheck() {
+            tickSecond();
+            if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
+            updateAudioStatus();
+            if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
+                sharedAudioCtx.resume().catch(() => {});
+            }
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   Web Worker للعد التنازلي
-        // ═══════════════════════════════════════════════════════
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') wakeUpCheck();
+        });
+        window.addEventListener('focus', wakeUpCheck);
+        window.addEventListener('pageshow', wakeUpCheck);
+
         const workerCode = `
             let intervalId = null;
             let targetTime = null;
             let prayerKey = '';
             self.onmessage = function(e) {
                 if (e.data.action === 'start') {
+                    if (intervalId) clearInterval(intervalId);
                     intervalId = setInterval(() => {
-                        self.postMessage({ type: 'tick' });
                         if (targetTime && Date.now() >= targetTime) {
-                            self.postMessage({ type: 'ALARM', prayerKey: prayerKey, triggeredAt: Date.now() });
+                            self.postMessage({ type: 'ALARM', prayerKey: prayerKey });
                             targetTime = null;
                         }
                     }, 1000);
@@ -774,169 +686,155 @@
             try {
                 const blob = new Blob([workerCode], { type: 'application/javascript' });
                 bgWorker = new Worker(URL.createObjectURL(blob));
-                bgWorker.onmessage = async (e) => {
-                    if (e.data.type === 'tick') {
-                        tickSecond();
-                    } else if (e.data.type === 'ALARM') {
-                        await handleAlarmTriggered(e.data.prayerKey, e.data.triggeredAt);
+                bgWorker.onmessage = (e) => {
+                    if (e.data.type === 'ALARM') {
+                        const key = e.data.prayerKey;
+                        if (!timingsData || !timingsData[key]) return;
+                        const d = (nextPrayerObj && nextPrayerObj.key === key)
+                            ? nextPrayerObj.date
+                            : parsePrayerDate(timingsData[key]);
+                        const lateBy = Date.now() - d.getTime();
+                        if (lateBy > 10 * 60 * 1000) {
+                            const id = `${key}-${d.toDateString()}`;
+                            if (lastTriggeredAdhanKey !== id) {
+                                lastTriggeredAdhanKey = id;
+                                try { localStorage.setItem('last_adhan_trigger_v17', id); } catch (e2) {}
+                                sendSystemNotification(`حان وقت أذان ${PRAYER_NAMES_AR[key]}`, 'وصل التنبيه متأخراً لأن الجهاز كان مغلقاً', false, true);
+                                showToast(`حان وقت أذان ${PRAYER_NAMES_AR[key]} أثناء إغلاق الجهاز`);
+                            }
+                            fetchPrayerTimes();
+                        } else if (triggerAdhanOnce(key, d)) {
+                            setTimeout(fetchPrayerTimes, 2500);
+                        }
+                        calculateNextPrayer();
                     }
                 };
                 bgWorker.postMessage({ action: 'start' });
-            } catch (e) {
-                console.error('Web Worker فشل:', e);
-            }
+            } catch (e) {}
         }
 
-        async function handleAlarmTriggered(key, triggeredAt) {
-            if (!timingsData || !timingsData[key]) return;
-            const d = (nextPrayerObj && nextPrayerObj.key === key)
-                ? nextPrayerObj.date
-                : parsePrayerDate(timingsData[key]);
-            const lateBy = Date.now() - d.getTime();
-            
-            if (lateBy > 10 * 60 * 1000) {
-                const id = `${key}-${d.toDateString()}`;
-                if (lastTriggeredAdhanKey !== id) {
-                    lastTriggeredAdhanKey = id;
-                    try { localStorage.setItem('last_adhan_trigger_v18', id); } catch (e) {}
-                    sendSystemNotification(
-                        `حان وقت أذان ${PRAYER_NAMES_AR[key]}`,
-                        'وصل التنبيه متأخراً لأن الجهاز كان مغلقاً',
-                        false, true
-                    );
-                    showToast(`حان وقت أذان ${PRAYER_NAMES_AR[key]} أثناء إغلاق الجهاز`);
-                }
-                fetchPrayerTimes();
-            } else if (triggerAdhanOnce(key, d)) {
-                setTimeout(fetchPrayerTimes, 2500);
-            }
-            calculateNextPrayer();
+        const SW_FILE_CODE = `/* sw.js — ضعه بجانب صفحة التطبيق على استضافة https */
+const CACHE = 'prayer-shell-v4';
+self.addEventListener('install', (e) => {
+    self.skipWaiting();
+    e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./'])).catch(() => {}));
+});
+self.addEventListener('activate', (e) => {
+    e.waitUntil((async () => {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)));
+        await self.clients.claim();
+    })());
+});
+self.addEventListener('fetch', (e) => {
+    if (e.request.method !== 'GET') return;
+    e.respondWith(
+        fetch(e.request).then((res) => {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
+            return res;
+        }).catch(() => caches.match(e.request).then((m) => m || caches.match('./') || Response.error()))
+    );
+});
+self.addEventListener('notificationclick', (e) => {
+    const action = e.action;
+    e.notification.close();
+    e.waitUntil((async () => {
+        const list = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        if (action === 'stop-adhan') {
+            for (const c of list) { c.postMessage({ type: 'STOP_ADHAN' }); }
+            return;
+        }
+        for (const c of list) { if ('focus' in c) return c.focus(); }
+        return self.clients.openWindow('./');
+    })());
+});
+self.addEventListener('push', (e) => {
+    let data = {};
+    try { data = e.data ? e.data.json() : {}; } catch (err) {}
+    e.waitUntil(self.registration.showNotification(data.title || 'أوقات الصلاة', {
+        body: data.body || 'حان موعد الصلاة',
+        dir: 'rtl', lang: 'ar',
+        vibrate: [200, 100, 200],
+        requireInteraction: true,
+        tag: 'prayer-notification',
+        actions: [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }]
+    }));
+});
+`;
+
+        function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            if (!location.protocol.startsWith('http')) return;
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => {
+                    console.log('✓ Service Worker مسجل — الإشعارات مفعلة');
+                    checkSwFileStatus();
+                })
+                .catch(() => {
+                    console.warn('⚠️ ملف sw.js غير موجود بجانب الصفحة — ارفعه على الاستضافة لتعمل الإشعارات على الجوال');
+                    checkSwFileStatus();
+                });
         }
 
-        function checkAndTriggerPrayer() {
-            // يُستدعى من Service Worker عبر Periodic Sync
-            if (!timingsData || !nextPrayerObj) return;
-            const now = new Date();
-            const diff = nextPrayerObj.date - now;
-            // إذا حان الوقت خلال آخر 5 دقائق
-            if (diff <= 0 && diff > -5 * 60 * 1000) {
-                triggerAdhanOnce(nextPrayerObj.key, nextPrayerObj.date);
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════
-        //   حالة الخلفية (UI)
-        // ═══════════════════════════════════════════════════════
-        function updateBgStatus(state, text) {
-            const el = document.getElementById('bgStatus');
-            const textEl = document.getElementById('bgStatusText');
-            if (!el || !textEl) return;
-            el.style.display = 'inline-flex';
-            el.className = 'bg-status ' + state;
-            textEl.textContent = text;
-        }
-
-        // ═══════════════════════════════════════════════════════
-        //   تفاصيل الحالة (في الإعدادات)
-        // ═══════════════════════════════════════════════════════
-        async function updateStatusDetails() {
-            const el = document.getElementById('statusDetails');
+        async function checkSwFileStatus() {
+            const el = document.getElementById('swStatusLine');
             if (!el) return;
-            
-            const items = [];
-            
-            // Service Worker
-            if ('serviceWorker' in navigator) {
-                const reg = await navigator.serviceWorker.getRegistration();
-                if (reg && reg.active) {
-                    items.push('✅ <b>Service Worker:</b> يعمل');
+            try {
+                const res = await fetch('./sw.js', { cache: 'no-store' });
+                if (res.ok) {
+                    const txt = await res.text();
+                    if (txt.indexOf('self.addEventListener') !== -1) {
+                        el.textContent = '✅ ملف sw.js موجود و سليم — الإشعارات جاهزة';
+                        el.style.color = '#34d399';
+                    } else {
+                        el.textContent = '⚠️ ملف sw.js موجود لكن محتواه غير صحيح — حمّله من الزر تحت و أعد رفعه';
+                        el.style.color = '#fbbf24';
+                    }
                 } else {
-                    items.push('⏳ <b>Service Worker:</b> جاري التسجيل');
+                    el.textContent = '❌ ملف sw.js غير موجود على الموقع — حمّله من الزر تحت و ارفعه بجانب index.html';
+                    el.style.color = '#fb7185';
                 }
-            } else {
-                items.push('❌ <b>Service Worker:</b> غير مدعوم');
+            } catch (e) {
+                el.textContent = '⚠️ تعذر فحص الملف الآن — تأكد من الاتصال';
+                el.style.color = '#fbbf24';
             }
-            
-            // Notifications
-            if ('Notification' in window) {
-                const perm = Notification.permission;
-                if (perm === 'granted') items.push('✅ <b>الإشعارات:</b> مسموحة');
-                else if (perm === 'denied') items.push('❌ <b>الإشعارات:</b> ممنوعة — فعّلها من المتصفح');
-                else items.push('⏳ <b>الإشعارات:</b> تحتاج إذن');
-            } else {
-                items.push('❌ <b>الإشعارات:</b> غير مدعومة');
-            }
-            
-            // Periodic Sync
-            if (swRegistration && 'periodicSync' in swRegistration) {
-                try {
-                    const status = await navigator.permissions.query({
-                        name: 'periodic-background-sync'
-                    });
-                    if (status.state === 'granted') items.push('✅ <b>العمل في الخلفية:</b> مفعّل (Periodic Sync)');
-                    else if (status.state === 'prompt') items.push('⏳ <b>العمل في الخلفية:</b> يحتاج تثبيت التطبيق');
-                    else items.push('❌ <b>العمل في الخلفية:</b> ممنوع من المتصفح');
-                } catch (e) {
-                    items.push('❌ <b>العمل في الخلفية:</b> غير مدعوم');
-                }
-            } else {
-                items.push('⚠️ <b>العمل في الخلفية:</b> محدود');
-            }
-            
-            // Audio
-            items.push(audioUnlocked ? '✅ <b>الصوت:</b> جاهز' : '⏳ <b>الصوت:</b> المس الشاشة للتفعيل');
-            
-            // PWA Installed
-            const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-            items.push(isInstalled ? '✅ <b>التطبيق:</b> مثبت' : '⏳ <b>التطبيق:</b> اضغط "تثبيت" للعمل في الخلفية');
-            
-            el.innerHTML = items.map(i => `<div>${i}</div>`).join('');
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   طلب كل الأذونات دفعة واحدة
-        // ═══════════════════════════════════════════════════════
-        async function requestAllPermissions() {
-            showToast('جاري طلب الأذونات...');
-            
-            // 1. Unlock Audio
-            tryUnlockAudio();
-            
-            // 2. Notification Permission
-            await requestNotificationPermission();
-            
-            // 3. Geolocation
-            detectUserLocation(false);
-            
-            // 4. Re-register SW and Periodic Sync
-            await registerServiceWorker();
-            
-            // 5. Wake Lock
-            await requestWakeLock();
-            
-            // 6. Update UI
-            await updateStatusDetails();
-            updateAudioStatus();
-            
-            showToast('✅ تم تفعيل كل الأذونات — تأكد من تثبيت التطبيق للعمل في الخلفية');
+        async function getSWRegistration() {
+            if (!('serviceWorker' in navigator)) return null;
+            try {
+                const reg = await Promise.race([
+                    navigator.serviceWorker.ready,
+                    new Promise((resolve) => setTimeout(() => resolve(null), 4000))
+                ]);
+                if (reg) return reg;
+                return (await navigator.serviceWorker.getRegistration()) || null;
+            } catch (e) { return null; }
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   تحميل البيانات والحفظ
-        // ═══════════════════════════════════════════════════════
+        function downloadServiceWorkerFile() {
+            try {
+                const blob = new Blob([SW_FILE_CODE], { type: 'application/javascript;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'sw.js';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('تم تحميل ملف sw.js — ارفعه بجانب index.html في GitHub');
+            } catch (e) { showToast('فشل تحميل الملف'); }
+        }
+
         function loadSettings() {
             try {
-                const saved = localStorage.getItem('prayer_widget_settings_v18');
+                const saved = localStorage.getItem('prayer_widget_settings_v17');
                 if (saved) settings = { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
             } catch (e) {}
         }
         function saveSettings() {
-            try { localStorage.setItem('prayer_widget_settings_v18', JSON.stringify(settings)); } catch (e) {}
+            try { localStorage.setItem('prayer_widget_settings_v17', JSON.stringify(settings)); } catch (e) {}
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   تحديد الموقع
-        // ═══════════════════════════════════════════════════════
         function detectUserLocation(showFeedback = true) {
             if (!navigator.geolocation) {
                 if (showFeedback) showToast('المتصفح لا يدعم تحديد الموقع');
@@ -974,9 +872,6 @@
             );
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   جلب أوقات الصلاة
-        // ═══════════════════════════════════════════════════════
         async function fetchPrayerTimes() {
             if (isFetching) return;
             isFetching = true;
@@ -1000,13 +895,12 @@
                     dateInfo = json.data.date;
                     lastFetchDay = new Date().toDateString();
                     try {
-                        localStorage.setItem('prayer_cached_data_v18', JSON.stringify({
+                        localStorage.setItem('prayer_cached_data_v17', JSON.stringify({
                             timings: timingsData, date: dateInfo, savedAt: lastFetchDay
                         }));
                     } catch (e) {}
                     if (badge) badge.textContent = 'متصل • محدث تلقائياً';
                     renderAll();
-                    sendScheduleToSW();
                 }
             } catch (error) {
                 if (badge) badge.textContent = 'وضع عدم الاتصال (بيانات محفوظة)';
@@ -1016,19 +910,9 @@
             }
         }
 
-        function sendScheduleToSW() {
-            if (!swRegistration || !swRegistration.active || !timingsData) return;
-            try {
-                swRegistration.active.postMessage({
-                    type: 'SET_SCHEDULE',
-                    schedule: timingsData
-                });
-            } catch (e) {}
-        }
-
         function loadCachedTimings() {
             try {
-                const cached = localStorage.getItem('prayer_cached_data_v18');
+                const cached = localStorage.getItem('prayer_cached_data_v17');
                 if (cached) {
                     const parsed = JSON.parse(cached);
                     timingsData = parsed.timings;
@@ -1038,9 +922,6 @@
             } catch (e) {}
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   عرض البيانات
-        // ═══════════════════════════════════════════════════════
         function renderAll() {
             document.getElementById('displayCity').textContent = settings.cityAr || settings.city;
             document.getElementById('displayCountry').textContent = settings.countryAr || settings.country;
@@ -1166,12 +1047,6 @@
                         prayerKey: upcoming.key
                     });
                 }
-                
-                // تفعيل Wake Lock إذا بقي أقل من 5 دقائق
-                const diff = upcoming.date - now;
-                if (diff > 0 && diff < 5 * 60 * 1000) {
-                    requestWakeLock();
-                }
             }
         }
 
@@ -1179,7 +1054,7 @@
             const triggerId = `${prayerKey}-${prayerDate.toDateString()}`;
             if (lastTriggeredAdhanKey === triggerId) return false;
             lastTriggeredAdhanKey = triggerId;
-            try { localStorage.setItem('last_adhan_trigger_v18', triggerId); } catch (e) {}
+            try { localStorage.setItem('last_adhan_trigger_v17', triggerId); } catch (e) {}
             onPrayerTimeArrived(prayerKey);
             return true;
         }
@@ -1189,7 +1064,8 @@
             const liveClockEl = document.getElementById('liveClockDisplay');
             if (liveClockEl) liveClockEl.textContent = `الآن: ${now.toLocaleTimeString('ar-SA', { hour:'2-digit', minute:'2-digit', second:'2-digit' })}`;
 
-            if (lastFetchDay && lastFetchDay !== now.toDateString()) {
+            if (lastFetchDay && lastFetchDay !== now.toDateString() && Date.now() - lastDayCheckAttempt > 60000) {
+                lastDayCheckAttempt = Date.now();
                 fetchPrayerTimes();
             }
             if (!nextPrayerObj || !timingsData) return;
@@ -1235,14 +1111,9 @@
             const prayerName = PRAYER_NAMES_AR[prayerKey];
             const isMuted = !!settings.mutedPrayers[prayerKey];
             try { if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]); } catch (e) {}
-            
             sendSystemNotification(`حان الآن موعد أذان ${prayerName}`, `حسب التوقيت المحلي لمدينة ${settings.cityAr}`, true);
-            
-            if (settings.adhanEnabled && !isMuted) {
-                playAdhanAudio(prayerKey, `أذان ${prayerName}`);
-            } else {
-                showToast(`حان الآن موعد أذان ${prayerName}`);
-            }
+            if (settings.adhanEnabled && !isMuted) playAdhanAudio(prayerKey, `أذان ${prayerName}`);
+            else showToast(`حان الآن موعد أذان ${prayerName}`);
         }
 
         function triggerPrePrayerNotification(prayerKey, mins) {
@@ -1281,11 +1152,19 @@
             audio.onerror = () => { playSoftChime(); };
             audio.onended = () => { stopAdhan(); };
 
-            // تفعيل Media Session للتحكم من شاشة القفل
-            setupMediaSession(PRAYER_NAMES_AR[prayerKey] || '');
-
-            // تفعيل Wake Lock لمنع النوم أثناء الأذان
-            requestWakeLock();
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        title: titleText,
+                        artist: settings.cityAr || 'أوقات الصلاة',
+                        album: 'الأذان',
+                        artwork: [{ src: APP_ICON_URL, sizes: '512x512', type: 'image/png' }]
+                    });
+                    navigator.mediaSession.playbackState = 'playing';
+                    navigator.mediaSession.setActionHandler('pause', () => stopAdhan());
+                    navigator.mediaSession.setActionHandler('stop', () => stopAdhan());
+                } catch (e) {}
+            }
 
             const p = audio.play();
             if (p) p.catch(() => { playSoftChime(); });
@@ -1298,14 +1177,21 @@
             audio.onerror = null;
             audio.onended = null;
             try { if (navigator.vibrate) navigator.vibrate(0); } catch (e) {}
-            
-            clearMediaSession();
-            releaseWakeLock();
-            
+            if (sharedAudioCtx) {
+                try { sharedAudioCtx.close(); } catch (e) {}
+                sharedAudioCtx = null;
+            }
             document.getElementById('adhanBanner').classList.add('hidden');
             const qs = document.getElementById('quickStopAdhanBtn');
             if (qs) qs.classList.add('hidden');
-            
+            if ('mediaSession' in navigator) {
+                try {
+                    navigator.mediaSession.playbackState = 'none';
+                    navigator.mediaSession.metadata = null;
+                    navigator.mediaSession.setActionHandler('pause', null);
+                    navigator.mediaSession.setActionHandler('stop', null);
+                } catch (e) {}
+            }
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistration().then((reg) => {
                     if (reg) return reg.getNotifications({ tag: 'prayer-notification' });
@@ -1337,9 +1223,6 @@
             } catch (e) {}
         }
 
-        // ═══════════════════════════════════════════════════════
-        //   الإشعارات
-        // ═══════════════════════════════════════════════════════
         function requestNotificationPermission() {
             if (!('Notification' in window)) return;
             if (Notification.permission !== 'default') return;
@@ -1347,25 +1230,45 @@
                 Promise.resolve(Notification.requestPermission()).then((p) => {
                     if (!p) return;
                     updateAudioStatus();
-                    updateStatusDetails();
                     if (p === 'granted') showToast('تم تفعيل الإشعارات ✓');
                     else if (p === 'denied') showToast('الإشعارات مرفوضة — فعّلها من إعدادات المتصفح');
                 }).catch(() => {});
             } catch (e) {}
         }
 
-        async function sendSystemNotification(title, body, withStopAction, silent = false) {
-            if (!('Notification' in window)) return;
-            if (Notification.permission !== 'granted') {
-                showToast(title);
+        async function enableNotificationsNow() {
+            tryUnlockAudio();
+            if (!('Notification' in window)) {
+                showToast('متصفحك لا يدعم الإشعارات — ثبّت التطبيق أولاً من زر التثبيت');
                 return;
             }
+            if (Notification.permission === 'granted') {
+                showToast('الإشعارات مفعلة من قبل ✓');
+                updateAudioStatus();
+                return;
+            }
+            if (Notification.permission === 'denied') {
+                showToast('الإشعارات مقفلة — فعّلها من إعدادات المتصفح أو النظام');
+                updateAudioStatus();
+                return;
+            }
+            try {
+                const p = await Notification.requestPermission();
+                if (p === 'granted') showToast('تم تفعيل الإشعارات ✓');
+                else showToast('لم يتم السماح بالإشعارات');
+            } catch (e) {}
+            updateAudioStatus();
+        }
+
+        async function sendSystemNotification(title, body, withStopAction, silent = false) {
+            if (!('Notification' in window)) { showToast(title); return; }
+            if (Notification.permission !== 'granted') { showToast(title); return; }
 
             const opts = {
                 body, dir: 'rtl', lang: 'ar',
                 tag: 'prayer-notification', renotify: true,
                 requireInteraction: !!withStopAction,
-                vibrate: silent ? [80] : [300, 150, 300, 150, 300, 150, 300],
+                vibrate: silent ? [80] : [300, 150, 300],
                 silent: !!silent,
                 icon: APP_ICON_URL, badge: APP_ICON_URL
             };
@@ -1373,106 +1276,20 @@
                 opts.actions = [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }];
                 opts.data = { stopAction: true };
             }
-            
-            // محاولة استخدام Service Worker لعرض الإشعار
-            if (swRegistration) {
-                try {
-                    await swRegistration.showNotification(title, opts);
-                    return;
-                } catch (e) {
-                    console.warn('فشل إشعار SW:', e);
-                }
+            const reg = await getSWRegistration();
+            if (reg) {
+                try { await reg.showNotification(title, opts); return; } catch (e) {}
             }
-            
-            // Fallback: إشعار عادي
             try {
                 const n = new Notification(title, { body, dir: 'rtl', lang: 'ar', icon: APP_ICON_URL, tag: 'prayer-notification' });
                 n.onclick = () => { window.focus(); if (withStopAction) stopAdhan(); n.close(); };
-            } catch (e) {
-                console.log('تعذر إرسال الإشعار:', e);
-                showToast(title);
-            }
+            } catch (e) { showToast(title); }
         }
 
-        function updateAudioStatus() {
-            const el = document.getElementById('audioStatusBadge');
-            if (!el) return;
-            const hasNotif = ('Notification' in window);
-            const perm = hasNotif ? Notification.permission : 'none';
-            if (!audioUnlocked) {
-                el.textContent = 'المس الشاشة مرة لتفعيل صوت الأذان';
-                el.style.color = '#fbbf24';
-            } else if (perm === 'granted') {
-                el.textContent = '🔔 الأذان والإشعارات جاهزة';
-                el.style.color = '#34d399';
-            } else if (perm === 'denied') {
-                el.textContent = '🔕 الإشعارات مقفلة';
-                el.style.color = '#fb7185';
-            } else if (perm === 'default') {
-                el.textContent = '🔔 المس الشاشة واسمح بالإشعارات';
-                el.style.color = '#fbbf24';
-            } else {
-                el.textContent = '🔔 الصوت جاهز';
-                el.style.color = '#38bdf8';
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════
-        //   PWA Install
-        // ═══════════════════════════════════════════════════════
-        function setupDynamicPWA() {
-            const manifest = {
-                name: 'أوقات الصلاة و الأذان', short_name: 'أوقات الصلاة',
-                description: 'تطبيق أوقات الصلاة و الأذان يعمل في الخلفية',
-                id: 'prayer-times-adhan-app-v18',
-                start_url: location.href.split('?')[0].split('#')[0],
-                scope: new URL('.', location.href).href,
-                display: 'standalone', orientation: 'any',
-                background_color: '#090d16', theme_color: '#0f172a',
-                icons: [
-                    { src: makePngIcon(192), sizes: '192x192', type: 'image/png', purpose: 'any' },
-                    { src: APP_ICON_URL, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
-                ]
-            };
-            try {
-                const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-                const link = document.createElement('link');
-                link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
-                document.head.appendChild(link);
-            } catch (e) {}
-            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
-            window.addEventListener('appinstalled', async () => {
-                showToast('تم تثبيت التطبيق ✓');
-                deferredInstallPrompt = null;
-                // حاول تفعيل Periodic Sync بعد التثبيت
-                await setupPeriodicSync();
-                await updateStatusDetails();
-            });
-        }
-
-        async function promptInstallApp() {
-            if (deferredInstallPrompt) {
-                deferredInstallPrompt.prompt();
-                await deferredInstallPrompt.userChoice;
-                deferredInstallPrompt = null;
-            } else {
-                openGuideModal();
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════
-        //   الإعدادات UI
-        // ═══════════════════════════════════════════════════════
         function toggleSettingsModal(show) {
             const modal = document.getElementById('settingsModal');
-            if (show) {
-                requestNotificationPermission();
-                populateSettingsUI();
-                updateStatusDetails();
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
+            if (show) { requestNotificationPermission(); populateSettingsUI(); modal.classList.remove('hidden'); }
+            else modal.classList.add('hidden');
         }
 
         function populateSettingsUI() {
@@ -1535,15 +1352,70 @@
         }
 
         function setTheme(t) { settings.theme = t; saveSettings(); applyVisualThemeAndLayout(); }
+        function setLayout(l) { settings.layout = l; saveSettings(); applyVisualThemeAndLayout(); }
 
         function applyVisualThemeAndLayout() {
             document.body.setAttribute('data-theme', settings.theme);
             const card = document.getElementById('mainWidgetCard');
             card.classList.remove('layout-card', 'layout-bar', 'layout-compact');
-            card.classList.add('layout-' + (settings.layout || 'card'));
+            if (settings.layout === 'bar') card.classList.add('layout-bar');
+            else if (settings.layout === 'compact') card.classList.add('layout-compact');
+            else card.classList.add('layout-card');
         }
 
-        function openGuideModal() { document.getElementById('guideModal').classList.remove('hidden'); }
+        function setupDynamicPWA() {
+            const manifest = {
+                name: 'أوقات الصلاة و الأذان', short_name: 'أوقات الصلاة',
+                description: 'تطبيق أوقات الصلاة و الأذان',
+                id: 'prayer-times-adhan-app',
+                start_url: location.href.split('?')[0].split('#')[0],
+                scope: new URL('.', location.href).href,
+                display: 'standalone', orientation: 'any',
+                background_color: '#090d16', theme_color: '#0f172a',
+                icons: [
+                    { src: makePngIcon(192), sizes: '192x192', type: 'image/png', purpose: 'any' },
+                    { src: APP_ICON_URL, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+                ]
+            };
+            try {
+                const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+                const link = document.createElement('link');
+                link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
+                document.head.appendChild(link);
+            } catch (e) {}
+            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredInstallPrompt = e; });
+            window.addEventListener('appinstalled', () => { showToast('تم تثبيت التطبيق ✓'); deferredInstallPrompt = null; });
+        }
+
+        async function promptInstallApp() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                await deferredInstallPrompt.userChoice;
+                deferredInstallPrompt = null;
+            } else openGuideModal();
+        }
+
+        function downloadStandaloneApp() {
+            try {
+                const clone = document.documentElement.cloneNode(true);
+                clone.querySelectorAll('link[rel="manifest"]').forEach((l) => {
+                    if ((l.getAttribute('href') || '').indexOf('blob:') === 0) l.remove();
+                });
+                const htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `Prayer-Times-${settings.city || 'App'}.html`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('تم تحميل التطبيق');
+            } catch (e) { showToast('فشل التحميل'); }
+        }
+
+        function openGuideModal() {
+            document.getElementById('guideModal').classList.remove('hidden');
+            if (location.search.indexOf('setup') !== -1 || location.hash.indexOf('setup') !== -1) checkSwFileStatus();
+        }
         function closeGuideModal() { document.getElementById('guideModal').classList.add('hidden'); }
 
         let toastTimeout = null;
@@ -1558,46 +1430,6 @@
                 box.classList.add('opacity-0', 'translate-y-4');
             }, 3500);
         }
-
-        function wakeUpCheck() {
-            tickSecond();
-            if (lastFetchDay && lastFetchDay !== new Date().toDateString()) fetchPrayerTimes();
-            updateAudioStatus();
-            if (sharedAudioCtx && sharedAudioCtx.state === 'suspended') {
-                sharedAudioCtx.resume().catch(() => {});
-            }
-        }
-
-        // ═══════════════════════════════════════════════════════
-        //   التشغيل الرئيسي
-        // ═══════════════════════════════════════════════════════
-        window.addEventListener('DOMContentLoaded', () => {
-            if (window.lucide) lucide.createIcons();
-            loadSettings();
-            applyVisualThemeAndLayout();
-            setupDynamicPWA();
-            loadCachedTimings();
-            
-            try {
-                lastTriggeredAdhanKey = localStorage.getItem('last_adhan_trigger_v18') || '';
-            } catch (e) {}
-            
-            if (settings.autoGpsOnLoad) detectUserLocation(false);
-            else fetchPrayerTimes();
-
-            startBackgroundTimer();
-            registerServiceWorker();
-            updateAudioStatus();
-
-            setTimeout(() => {
-                if (!audioUnlocked) showToast('المس الشاشة مرة واحدة لتفعيل صوت الأذان 🔔');
-            }, 2000);
-
-            setInterval(fetchPrayerTimes, 30 * 60 * 1000);
-            window.addEventListener('online', () => { fetchPrayerTimes(); });
-            window.addEventListener('focus', wakeUpCheck);
-            window.addEventListener('pageshow', wakeUpCheck);
-        });
     </script>
 </body>
 </html>
