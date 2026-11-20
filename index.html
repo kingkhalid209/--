@@ -90,11 +90,9 @@
         }
         .adhan-ringing { animation: pulse-ring 1.8s infinite; }
         @media (prefers-reduced-motion: reduce) { .adhan-ringing { animation: none; } }
-        * { scrollbar-width: thin; scrollbar-color: rgba(148, 163, 184, 0.35) transparent; }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
         .test-prayer-btn {
             padding: 0.5rem 0.6rem; border-radius: 0.75rem; font-size: 0.7rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 0.3rem;
@@ -211,6 +209,27 @@
             </div>
 
             <div id="prayersList" class="prayers-grid flex flex-col gap-2"></div>
+
+            <!-- شريط التوضيح الصادق للمستخدم -->
+            <div id="howItWorksBar" class="mt-4 p-3 rounded-2xl border text-[11px] sm:text-xs leading-relaxed space-y-1.5" style="background: rgba(251, 191, 36, 0.08); border-color: rgba(251, 191, 36, 0.3);">
+                <div class="flex items-start gap-1.5">
+                    <span class="text-amber-400 font-black shrink-0">ℹ️</span>
+                    <span class="font-bold text-amber-300">كيف يشتغل الأذان؟ اقرأ قبل ما تحكم على التطبيق:</span>
+                </div>
+                <div class="flex items-start gap-1.5">
+                    <span class="text-emerald-400 font-black shrink-0">✓</span>
+                    <span>الإشعار يوصلك في وقت الصلاة <b class="text-emerald-400">و التطبيق شغّال</b> (حتى لو طفيته من الشاشة).</span>
+                </div>
+                <div class="flex items-start gap-1.5">
+                    <span class="text-emerald-400 font-black shrink-0">✓</span>
+                    <span>اضغط <b class="text-emerald-400">«🔊 شغّل الأذان»</b> في الإشعار — يطلع الصوت مباشرة.</span>
+                </div>
+                <div class="flex items-start gap-1.5">
+                    <span class="text-rose-400 font-black shrink-0">✗</span>
+                    <span>الأذان <b class="text-rose-400">ما يشتغل من نفسه و الشاشة مقفلة تماماً</b> — هذا منع من آبل و جوجل لكل المواقع، مو عيب في التطبيق.</span>
+                </div>
+                <button onclick="openGuideModal()" class="mt-1 underline font-bold text-amber-300 hover:text-amber-200">📖 اقرأ الشرح الكامل و خطوات التفعيل</button>
+            </div>
 
             <div class="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs opacity-65">
                 <span id="liveClockDisplay" class="mono-num">الآن: --:--:--</span>
@@ -374,7 +393,7 @@
                     </div>
                     <label class="flex items-center gap-2 cursor-pointer pt-1">
                         <input type="checkbox" id="enableAdhanCheckbox" checked class="w-4 h-4 accent-sky-400 rounded">
-                        <span class="text-xs sm:text-sm font-bold">تشغيل الأذان تلقائياً في وقته</span>
+                        <span class="text-xs sm:text-sm font-bold">تشغيل الأذان تلقائياً في وقته (و التطبيق شغّال)</span>
                     </label>
                     <button type="button" onclick="enableNotificationsNow()" class="w-full px-3 py-2 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-bold hover:bg-sky-500/30 flex items-center justify-center gap-1.5 transition">
                         <i data-lucide="bell" class="w-3.5 h-3.5"></i>
@@ -413,7 +432,7 @@
                             </div>
                             <div class="flex items-start gap-1.5">
                                 <span class="text-sky-400 font-black shrink-0">✓</span>
-                                <span><b class="text-sky-400">إيقاف من الإشعار مباشرة</b> — بدون فتح التطبيق، و الأذان فقط في وقته بدون أي صوت آخر.</span>
+                                <span><b class="text-sky-400">الإشعار فيه زر «🔊 شغّل الأذان»</b> — اضغطه و الصوت يطلع بدون ما تفتح التطبيق بنفسك.</span>
                             </div>
                         </div>
                     </div>
@@ -430,33 +449,35 @@
     <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-lg rounded-3xl p-6 border border-white/20 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                <h3 class="text-lg font-black text-sky-400">تثبيت التطبيق و الويدجت</h3>
+                <h3 class="text-lg font-black text-sky-400">تثبيت التطبيق و تشغيل الإشعارات</h3>
                 <button onclick="closeGuideModal()" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             <div class="space-y-3 text-xs sm:text-sm leading-relaxed">
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <strong class="text-emerald-400 block mb-1">📱 أندرويد:</strong>
-                    افتح في Chrome واضغط "تثبيت التطبيق"، ثم المس الشاشة مرة واحدة واضغط «سماح» للإشعارات 🔔 عند الأذان يوصلك إشعار فيه زر «إيقاف الأذان» توقفه منه مباشرة.
+                <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
+                    <strong class="text-emerald-400 block mb-1">📱 خطوات التفعيل (اتبعها بالترتيب):</strong>
+                    <ol class="list-decimal pr-5 space-y-1">
+                        <li>افتح الموقع في <b>Chrome</b> على أندرويد، أو <b>Safari</b> على آيفون.</li>
+                        <li>اضغط زر <b>«تثبيت التطبيق»</b> بالأعلى، أو «إضافة إلى الشاشة الرئيسية».</li>
+                        <li>افتح التطبيق <b>من الأيقونة الجديدة</b> (مو من المتصفح).</li>
+                        <li>اضغط زر <b>«تفعيل الإشعارات الآن»</b> من الإعدادات، و اختر «سماح».</li>
+                        <li>على أندرويد: <b>الإعدادات → التطبيقات → هذا التطبيق → البطارية → غير مقيد</b>.</li>
+                        <li>لا تقتل التطبيق من قائمة المهام — اتركه بالخلفية.</li>
+                    </ol>
                 </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <strong class="text-sky-400 block mb-1">🍏 آيفون/آيباد:</strong>
-                    افتح في Safari → المشاركة → "إضافة إلى الصفحة الرئيسية". افتح التطبيق من الأيقونة الجديدة، المس الشاشة و اضغط «سماح» للإشعارات، و أبقِ التطبيق مفتوحاً عند انتظار الأذان. الإيقاف من مشغل الوسائط على شاشة القفل أو بفتح الإشعار.
-                </div>
-                <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
-                    <strong class="text-amber-400 block mb-1">💻 كمبيوتر/تلفزيون:</strong>
-                    ثبّته كتطبيق سطح مكتب من قائمة المتصفح، واسمح بالإشعارات.
+                <div class="p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
+                    <strong class="text-sky-400 block mb-1">🔔 وش يصير عند وقت الصلاة؟</strong>
+                    يوصلك إشعار فيه زر <b>«🔊 شغّل الأذان»</b> — اضغطه و الأذان يشتغل على طول. و فيه زر <b>«⏹ إغلاق»</b> لو تبي تسكته.
                 </div>
                 <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30">
-                    <strong class="text-amber-400 block mb-1">ℹ️ كيف يعمل الأذان؟</strong>
-                    الأذان و الإشعار يعملان في وقتهم و التطبيق مفتوح — حتى لو فتحت تطبيقاً آخر و الشاشة شغالة. إذا انطفأت الشاشة تماماً، نظام الجوال يجمّد المواقع كلها (قانون من آيفون/أندرويد وليس عيباً بالتطبيق)، و أول ما ترجع للتطبيق يوصلك التنبيه فوراً إذا كان الوقت قريباً. لا يوجد أي صوت مستمر، و الشاشة تنطفئ طبيعي.
+                    <strong class="text-amber-400 block mb-1">⚠️ اقرأ هذا حتى ما تستغرب:</strong>
+                    الأذان <b>ما يشتغل من نفسه و الشاشة مقفلة تماماً</b>. هذا <b>منع من آبل و جوجل لكل المواقع</b> (حتى يوتيوب ما يشتغلون صوت و الشاشة مطفية من المتصفح). الحل الوحيد لهذا هو تطبيق من المتجر. الموقع الحالي يشتغل <b>أفضل ما يمكن لموقع ويب</b>: إشعار فوري + صوت بضغطة وحدة.
                 </div>
                 <div id="ownerSwBox" class="hidden p-3 rounded-2xl bg-sky-500/10 border border-sky-500/30">
                     <strong class="text-sky-400 block mb-1">🔧 أدوات المالك (تظهر فقط عبر ?setup=1):</strong>
-                    هذه الأدوات لك أنت يا صاحب الموقع — الزوار لا يرون هذا الصندوق أبداً.
                     <div id="swStatusLine" class="mt-1 font-bold text-amber-300">⏳ جاري فحص ملف sw.js...</div>
-                    <div class="mt-1 text-amber-300 font-bold">⚠️ مهم جداً: لازم ترفع ملف sw.js بجانب index.html في مستودع GitHub — بدونه الإشعارات لا تعمل على الجوال.</div>
+                    <div class="mt-1 text-amber-300 font-bold">⚠️ لازم ترفع ملف sw.js بجانب index.html في GitHub — بدونه الإشعارات لا تعمل.</div>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <button onclick="downloadServiceWorkerFile()" class="px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-300 text-xs font-bold hover:bg-sky-500/30 flex items-center gap-1">
                             <i data-lucide="file-down" class="w-3.5 h-3.5"></i><span>تحميل ملف sw.js</span>
@@ -601,7 +622,13 @@
 
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.addEventListener('message', (e) => {
-                    if (e.data && e.data.type === 'STOP_ADHAN') stopAdhan();
+                    if (!e.data) return;
+                    if (e.data.type === 'STOP_ADHAN') stopAdhan();
+                    if (e.data.type === 'PLAY_ADHAN') {
+                        tryUnlockAudio();
+                        const key = nextPrayerObj ? nextPrayerObj.key : 'Fajr';
+                        playAdhanAudio(key, 'أذان ' + (PRAYER_NAMES_AR[key] || ''));
+                    }
                 });
             }
 
@@ -628,13 +655,13 @@
                 el.textContent = 'المس الشاشة مرة لتفعيل صوت الأذان';
                 el.style.color = '#fbbf24';
             } else if (perm === 'granted') {
-                el.textContent = '🔔 الأذان و الإشعارات جاهزة — تعمل في وقتها';
+                el.textContent = '🔔 الإشعارات مفعّلة — اضغط «🔊 شغّل الأذان» عند وصولها';
                 el.style.color = '#34d399';
             } else if (perm === 'denied') {
                 el.textContent = '🔕 الإشعارات مقفلة — فعّلها من إعدادات المتصفح';
                 el.style.color = '#fb7185';
             } else if (perm === 'default') {
-                el.textContent = '🔔 الصوت جاهز — المس الشاشة واسمح بالإشعارات';
+                el.textContent = '🔔 الصوت جاهز — المس الشاشة و اضغط «سماح» للإشعارات';
                 el.style.color = '#fbbf24';
             } else {
                 el.textContent = '🔔 الصوت جاهز — ثبّت التطبيق لتفعيل الإشعارات';
@@ -699,8 +726,8 @@
                             if (lastTriggeredAdhanKey !== id) {
                                 lastTriggeredAdhanKey = id;
                                 try { localStorage.setItem('last_adhan_trigger_v17', id); } catch (e2) {}
-                                sendSystemNotification(`حان وقت أذان ${PRAYER_NAMES_AR[key]}`, 'وصل التنبيه متأخراً لأن الجهاز كان مغلقاً', false, true);
-                                showToast(`حان وقت أذان ${PRAYER_NAMES_AR[key]} أثناء إغلاق الجهاز`);
+                                sendSystemNotification(`فاتك أذان ${PRAYER_NAMES_AR[key]}`, 'الجوال كان مجمّد — اضغط «🔊 شغّل الأذان»', true, true);
+                                showToast(`فاتك أذان ${PRAYER_NAMES_AR[key]} — اضغط زر الصوت بالإشعار`);
                             }
                             fetchPrayerTimes();
                         } else if (triggerAdhanOnce(key, d)) {
@@ -745,7 +772,13 @@ self.addEventListener('notificationclick', (e) => {
             for (const c of list) { c.postMessage({ type: 'STOP_ADHAN' }); }
             return;
         }
-        for (const c of list) { if ('focus' in c) return c.focus(); }
+        if (action === 'play-adhan') {
+            for (const c of list) { c.postMessage({ type: 'PLAY_ADHAN' }); }
+            return;
+        }
+        for (const c of list) {
+            if ('focus' in c) { c.postMessage({ type: 'PLAY_ADHAN' }); return c.focus(); }
+        }
         return self.clients.openWindow('./');
     })());
 });
@@ -753,12 +786,15 @@ self.addEventListener('push', (e) => {
     let data = {};
     try { data = e.data ? e.data.json() : {}; } catch (err) {}
     e.waitUntil(self.registration.showNotification(data.title || 'أوقات الصلاة', {
-        body: data.body || 'حان موعد الصلاة',
+        body: data.body || 'حان موعد الصلاة — اضغط «🔊 شغّل الأذان»',
         dir: 'rtl', lang: 'ar',
         vibrate: [200, 100, 200],
         requireInteraction: true,
         tag: 'prayer-notification',
-        actions: [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }]
+        actions: [
+            { action: 'play-adhan', title: '🔊 شغّل الأذان' },
+            { action: 'stop-adhan', title: '⏹ إغلاق' }
+        ]
     }));
 });
 `;
@@ -1111,7 +1147,7 @@ self.addEventListener('push', (e) => {
             const prayerName = PRAYER_NAMES_AR[prayerKey];
             const isMuted = !!settings.mutedPrayers[prayerKey];
             try { if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]); } catch (e) {}
-            sendSystemNotification(`حان الآن موعد أذان ${prayerName}`, `حسب التوقيت المحلي لمدينة ${settings.cityAr}`, true);
+            sendSystemNotification(`حان الآن موعد أذان ${prayerName}`, `حسب التوقيت المحلي لمدينة ${settings.cityAr} — اضغط «🔊 شغّل الأذان»`, true);
             if (settings.adhanEnabled && !isMuted) playAdhanAudio(prayerKey, `أذان ${prayerName}`);
             else showToast(`حان الآن موعد أذان ${prayerName}`);
         }
@@ -1273,8 +1309,10 @@ self.addEventListener('push', (e) => {
                 icon: APP_ICON_URL, badge: APP_ICON_URL
             };
             if (withStopAction) {
-                opts.actions = [{ action: 'stop-adhan', title: '⏹ إيقاف الأذان' }];
-                opts.data = { stopAction: true };
+                opts.actions = [
+                    { action: 'play-adhan', title: '🔊 شغّل الأذان' },
+                    { action: 'stop-adhan', title: '⏹ إغلاق' }
+                ];
             }
             const reg = await getSWRegistration();
             if (reg) {
@@ -1282,7 +1320,7 @@ self.addEventListener('push', (e) => {
             }
             try {
                 const n = new Notification(title, { body, dir: 'rtl', lang: 'ar', icon: APP_ICON_URL, tag: 'prayer-notification' });
-                n.onclick = () => { window.focus(); if (withStopAction) stopAdhan(); n.close(); };
+                n.onclick = () => { window.focus(); tryUnlockAudio(); n.close(); };
             } catch (e) { showToast(title); }
         }
 
